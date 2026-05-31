@@ -3,6 +3,7 @@ const ASSETS = [
   './',
   './index.html',
   './currency.js',
+  './vercel-analytics.js',
   './app.js',
   './export-word.js',
   './styles.css',

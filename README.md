@@ -88,15 +88,34 @@ Après déploiement : `https://journal-trading-xxx.vercel.app`
 - HTTPS activé → PWA et installation mobile fonctionnent
 - Ouvrir l'URL sur téléphone → **Sync → Installer l'application**
 
-### Statistiques sur Vercel
+### Statistiques du site (Vercel Web Analytics)
 
-| Type | Où le voir |
-|------|------------|
-| **Stats du site** (visites, pays…) | Vercel Dashboard → projet → **Analytics** (option payante / trial) |
-| **Stats de trading** (KPIs, courbe…) | Dans l'app → Tableau de bord / Analyse hebdo |
+Le projet inclut **Vercel Web Analytics** (`vercel-analytics.js`) : visites, pages vues, pays, appareils, etc.  
+Les stats ne s’activent **pas** en local (`localhost`) — uniquement sur l’URL HTTPS Vercel.
 
-> Les trades sont stockés dans le **navigateur de chaque appareil**, pas sur Vercel.  
-> Pour transférer PC → téléphone : **Sync → Exporter (.json) → Importer** sur l'autre appareil.
+#### Activer les analytics (une fois)
+
+1. Déployer le projet sur Vercel (voir ci-dessus).
+2. Ouvrir le [tableau de bord Vercel](https://vercel.com/dashboard) → votre projet **journal-trading**.
+3. Onglet **Analytics** → **Enable Web Analytics** (confirmer si un plan / essai est proposé).
+4. Redéployer si demandé : `git push` ou **Deployments → Redeploy**.
+5. Visiter le site en production, naviguer entre quelques sections, attendre **quelques minutes**.
+6. Revenir dans **Analytics** pour voir les données (visiteurs, vues, événements `section_view`).
+
+#### Ce qui est mesuré
+
+| Métrique | Détail |
+|----------|--------|
+| Visites / pages vues | Chargement du site sur Vercel |
+| Sections de l’app | Événement `section_view` (dashboard, trades, new-trade, sync…) |
+| Local / fichier | **Non tracké** (volontaire) |
+
+#### Stats de trading (dans l’app)
+
+Les KPIs, courbe d’équité et analyse hebdo restent **dans le navigateur** (Tableau de bord / Analyse hebdo) — ce ne sont pas les analytics Vercel.
+
+> Les trades sont stockés localement par appareil, pas sur Vercel.  
+> PC → téléphone : **Sync → Exporter (.json) → Importer**.
 
 ---
 
@@ -111,6 +130,7 @@ journal-trading/
 ├── sw.js               # Service Worker (PWA)
 ├── manifest.webmanifest
 ├── icons/icon.svg
+├── vercel-analytics.js # Vercel Web Analytics (production HTTPS)
 ├── vercel.json         # Config Vercel
 ├── start.bat           # Serveur local Windows
 └── package.json

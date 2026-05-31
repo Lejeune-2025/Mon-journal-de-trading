@@ -1530,6 +1530,7 @@
     $('#pageTitle').textContent = sectionTitles[section] || section;
     closeSidebar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window.trackJournalSection === 'function') window.trackJournalSection(section);
 
     if (section === 'weekly') renderWeeklySummary();
     if (section === 'trades') renderAllTrades();
@@ -1789,6 +1790,7 @@
     updateUserDisplay();
     renderAll();
     await restoreDraftIfAny();
+    if (typeof window.trackJournalSection === 'function') window.trackJournalSection('dashboard');
   }
 
   async function init() {
