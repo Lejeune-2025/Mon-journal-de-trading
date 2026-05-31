@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0f172a">
+  <title>Journal de Trading Professionnel</title>
+  <script>
+    if (location.protocol === 'http:' || location.protocol === 'https:') {
+      const m = document.createElement('link');
+      m.rel = 'manifest';
+      m.href = 'manifest.webmanifest';
+      document.head.appendChild(m);
+    }
+  </script>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body:not(.app-ready) .app { opacity: 0; visibility: hidden; }
+    .splash-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #020617;
+      display: flex; align-items: center; justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="splashScreen" class="splash-screen" role="status" aria-live="polite" aria-label="Chargement en cours">
+    <div class="splash-content">
+      <div class="splash-logo" aria-hidden="true">
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+          <polyline points="16 7 22 7 22 13"/>
+        </svg>
+      </div>
+      <p class="splash-title">Trading Journal</p>
+      <div class="splash-loader" aria-hidden="true"><div class="splash-loader-bar"></div></div>
+    </div>
+  </div>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+            <polyline points="16 7 22 7 22 13"/>
+          </svg>
+          <span>Trading Journal</span>
+        </div>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Fermer le menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-section="dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Tableau de bord
+        </button>
+        <button class="nav-item" data-section="profile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profil trader
+        </button>
+        <button class="nav-item" data-section="new-trade">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          Nouveau trade
+        </button>
+        <button class="nav-item" data-section="trades">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Historique
+        </button>
+        <button class="nav-item" data-section="weekly">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Analyse hebdo
+        </button>
+        <button class="nav-item" data-section="checklist">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Checklist
+        </button>
+        <button class="nav-item" data-section="notes">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Notes
+        </button>
+        <button class="nav-item" data-section="sync">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9"/><path d="M21 3v6h-6"/><path d="M3 12a9 9 0 0 1 9-9"/><path d="M3 21v-6h6"/></svg>
+          Sync mobile
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <p class="persist-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Données sauvegardées automatiquement sur cet ordinateur
+        </p>
+        <button class="btn btn-primary btn-sm" id="exportWordBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Exporter Word (.docx)
+        </button>
+        <button class="btn btn-ghost btn-sm" id="exportBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter CSV
+        </button>
+        <button class="btn btn-ghost btn-sm" id="printBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimer
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1 class="page-title" id="pageTitle">Tableau de bord</h1>
+        <div class="topbar-actions">
+          <button class="user-badge" id="userBadge" type="button" title="Changer de profil">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="currentUserName">—</span>
+          </button>
+          <span class="save-indicator" id="saveIndicator">Données conservées localement</span>
+        </div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <section class="section active" id="section-dashboard">
+        <p class="period-label" id="dashboardWeekLabel">Semaine en cours</p>
+        <div class="kpi-grid" id="kpiGrid"></div>
+        <div class="card">
+          <div class="card-header">
+            <h2>Courbe d'équité</h2>
+            <div class="chart-scope-toggle">
+              <button type="button" class="btn btn-ghost btn-sm active" data-chart-scope="week">Semaine</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-chart-scope="all">Tout</button>
+            </div>
+          </div>
+          <div id="equityChartWrap" class="equity-chart-wrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h2>Trades de la semaine</h2>
+            <button class="btn btn-primary btn-sm" data-goto="new-trade">+ Nouveau trade</button>
+          </div>
+          <div class="table-wrap desktop-only">
+            <table class="data-table" id="recentTradesTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Actif</th>
+                  <th>Sens</th>
+                  <th>Résultat €</th>
+                  <th>R Multiple</th>
+                  <th>Plan</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="trade-cards mobile-only" id="recentTradesCards"></div>
+          <p class="empty-state hidden" id="emptyTrades">Aucun trade enregistré. Commencez par ajouter votre premier trade.</p>
+        </div>
+      </section>
+
+      <!-- PROFIL -->
+      <section class="section" id="section-profile">
+        <div class="card">
+          <h2>Profil utilisateur</h2>
+          <p class="profile-user-info" id="profileUserInfo"></p>
+          <div class="profile-user-actions">
+            <button class="btn btn-ghost btn-sm" id="switchUserBtn" type="button">Changer de profil</button>
+            <button class="btn btn-primary btn-sm" id="createUserBtn" type="button">Nouveau profil</button>
+            <button class="btn btn-danger btn-sm" id="deleteCurrentProfileBtn" type="button">Supprimer ce profil</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Gérer les profils</h2>
+          <p class="sync-intro">Chaque profil possède ses propres trades. La suppression est définitive.</p>
+          <div id="profilesList" class="profiles-list"></div>
+        </div>
+        <div class="card">
+          <h2>Informations du trader</h2>
+          <div class="card-header card-header-inline">
+            <p class="sync-intro profile-view-hint">Données enregistrées pour ce profil utilisateur.</p>
+            <button type="button" class="btn btn-primary btn-sm" id="editProfileBtn">Modifier</button>
+          </div>
+          <dl class="profile-view-grid" id="profileView"></dl>
+          <form id="profileForm" class="form-grid hidden">
+            <div class="form-group">
+              <label for="traderName">Nom du trader</label>
+              <input type="text" id="traderName" placeholder="Votre nom">
+            </div>
+            <div class="form-group">
+              <label for="mainMarket">Marché principal</label>
+              <input type="text" id="mainMarket" placeholder="Forex, Indices, Crypto...">
+            </div>
+            <div class="form-group">
+              <label for="strategy">Stratégie utilisée</label>
+              <input type="text" id="strategy" placeholder="Ex: Breakout H4, Price Action...">
+            </div>
+            <div class="form-group">
+              <label for="startingCapital">Capital de départ (€)</label>
+              <input type="number" id="startingCapital" step="0.01" min="0" placeholder="10000">
+            </div>
+            <div class="form-group">
+              <label for="maxRisk">Risque maximum par trade (%)</label>
+              <input type="number" id="maxRisk" step="0.1" min="0" max="100" placeholder="1">
+            </div>
+            <div class="form-actions profile-form-actions">
+              <button type="button" class="btn btn-ghost" id="cancelProfileBtn">Annuler</button>
+              <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- NOUVEAU TRADE -->
+      <section class="section" id="section-new-trade">
+        <form id="tradeForm">
+          <input type="hidden" id="tradeId">
+
+          <div class="card">
+            <h2>1. Informations générales du trade</h2>
+            <div class="form-grid form-grid-3">
+              <div class="form-group">
+                <label for="tradeDate">Date du trade</label>
+                <input type="date" id="tradeDate" required>
+              </div>
+              <div class="form-group">
+                <label for="asset">Actif tradé</label>
+                <input type="text" id="asset" placeholder="EUR/USD, BTC..." required>
+              </div>
+              <div class="form-group">
+                <label>Sens</label>
+                <div class="radio-group">
+                  <label class="radio-label"><input type="radio" name="direction" value="Achat" checked> Achat</label>
+                  <label class="radio-label"><input type="radio" name="direction" value="Vente"> Vente</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="entryPrice">Prix d'entrée</label>
+                <input type="number" id="entryPrice" step="any" min="0">
+              </div>
+              <div class="form-group">
+                <label for="stopLoss">Stop Loss</label>
+                <input type="number" id="stopLoss" step="any" min="0">
+              </div>
+              <div class="form-group">
+                <label for="takeProfit">Objectif / Take Profit</label>
+                <input type="number" id="takeProfit" step="any" min="0">
+              </div>
+              <div class="form-group">
+                <label for="positionSize">Taille de position</label>
+                <input type="text" id="positionSize" placeholder="Lots, unités...">
+              </div>
+              <div class="form-group">
+                <label for="riskAmount">Risque en €</label>
+                <input type="number" id="riskAmount" step="0.01" min="0">
+              </div>
+              <div class="form-group">
+                <label>Résultat du trade</label>
+                <div class="radio-group">
+                  <label class="radio-label"><input type="radio" name="resultType" value="Gain"> Gain</label>
+                  <label class="radio-label"><input type="radio" name="resultType" value="Perte"> Perte</label>
+                  <label class="radio-label"><input type="radio" name="resultType" value="Break-even"> Break-even</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="resultAmount">Montant du résultat (€)</label>
+                <input type="number" id="resultAmount" step="0.01" placeholder="Positif = gain, négatif = perte">
+              </div>
+              <div class="form-group">
+                <label for="plannedRR">Ratio R/R prévu</label>
+                <input type="number" id="plannedRR" step="0.01" readonly class="computed">
+              </div>
+              <div class="form-group">
+                <label for="actualRR">Ratio R/R réalisé</label>
+                <input type="number" id="actualRR" step="0.01" readonly class="computed">
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>2. Plan de trade</h2>
+            <div class="form-group">
+              <label for="entryReason">Raison de l'entrée</label>
+              <textarea id="entryReason" rows="4" placeholder="Signal d'entrée, configuration technique, contexte de marché..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Conditions de marché</label>
+              <div class="checkbox-grid" id="marketConditions">
+                <label class="checkbox-label"><input type="checkbox" value="Tendance haussière"> Tendance haussière</label>
+                <label class="checkbox-label"><input type="checkbox" value="Tendance baissière"> Tendance baissière</label>
+                <label class="checkbox-label"><input type="checkbox" value="Range"> Range</label>
+                <label class="checkbox-label"><input type="checkbox" value="Forte volatilité"> Forte volatilité</label>
+                <label class="checkbox-label"><input type="checkbox" value="Faible volatilité"> Faible volatilité</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Timeframe utilisé</label>
+              <div class="checkbox-grid" id="timeframes">
+                <label class="checkbox-label"><input type="checkbox" value="M1"> M1</label>
+                <label class="checkbox-label"><input type="checkbox" value="M5"> M5</label>
+                <label class="checkbox-label"><input type="checkbox" value="M15"> M15</label>
+                <label class="checkbox-label"><input type="checkbox" value="M30"> M30</label>
+                <label class="checkbox-label"><input type="checkbox" value="H1"> H1</label>
+                <label class="checkbox-label"><input type="checkbox" value="H4"> H4</label>
+                <label class="checkbox-label"><input type="checkbox" value="Daily"> Daily</label>
+                <label class="checkbox-label checkbox-other">
+                  <input type="checkbox" value="Autre" id="timeframeOtherCheck"> Autre :
+                  <input type="text" id="timeframeOther" placeholder="..." class="inline-input">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>3. Gestion émotionnelle</h2>
+            <div class="form-grid form-grid-3">
+              <div class="form-group">
+                <label>État émotionnel avant l'entrée</label>
+                <select id="emotionBefore">
+                  <option value="">— Sélectionner —</option>
+                  <option>Calme</option>
+                  <option>Confiant</option>
+                  <option>Stressé</option>
+                  <option>Impatient</option>
+                  <option>Fatigué</option>
+                  <option>Euphorique</option>
+                  <option>Hésitant</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>État émotionnel pendant le trade</label>
+                <select id="emotionDuring">
+                  <option value="">— Sélectionner —</option>
+                  <option>Calme</option>
+                  <option>Stressé</option>
+                  <option>Peur de perdre</option>
+                  <option>Envie de couper trop tôt</option>
+                  <option>Envie de déplacer le stop</option>
+                  <option>Neutre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>État émotionnel après le trade</label>
+                <select id="emotionAfter">
+                  <option value="">— Sélectionner —</option>
+                  <option>Satisfait</option>
+                  <option>Frustré</option>
+                  <option>Déçu</option>
+                  <option>Neutre</option>
+                  <option>Euphorique</option>
+                  <option>En colère</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="emotionComments">Commentaires émotionnels</label>
+              <textarea id="emotionComments" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>4. Erreurs et discipline</h2>
+            <div class="form-group">
+              <label>Le plan de trading a-t-il été respecté ?</label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="planRespected" value="Oui"> Oui</label>
+                <label class="radio-label"><input type="radio" name="planRespected" value="Non"> Non</label>
+                <label class="radio-label"><input type="radio" name="planRespected" value="Partiellement"> Partiellement</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Erreurs commises</label>
+              <div class="checkbox-grid" id="errors">
+                <label class="checkbox-label"><input type="checkbox" value="Entrée trop tôt"> Entrée trop tôt</label>
+                <label class="checkbox-label"><input type="checkbox" value="Entrée trop tard"> Entrée trop tard</label>
+                <label class="checkbox-label"><input type="checkbox" value="Stop Loss mal placé"> Stop Loss mal placé</label>
+                <label class="checkbox-label"><input type="checkbox" value="Objectif mal défini"> Objectif mal défini</label>
+                <label class="checkbox-label"><input type="checkbox" value="Sur-levier"> Sur-levier</label>
+                <label class="checkbox-label"><input type="checkbox" value="Revenge trading"> Revenge trading</label>
+                <label class="checkbox-label"><input type="checkbox" value="Non-respect du plan"> Non-respect du plan</label>
+                <label class="checkbox-label"><input type="checkbox" value="Trade impulsif"> Trade impulsif</label>
+                <label class="checkbox-label"><input type="checkbox" value="Aucune erreur"> Aucune erreur</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="errorDescription">Description des erreurs</label>
+              <textarea id="errorDescription" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="lessonLearned">Leçon à retenir</label>
+              <textarea id="lessonLearned" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>5. Captures avant / après</h2>
+            <p class="screenshot-help">
+              <strong>Avant le trade :</strong> ajoutez la capture au moment de l'entrée.<br>
+              <strong>Après le trade :</strong> faites votre screenshot (<kbd>Win</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> sur Windows), puis cliquez sur la zone « Capture après » et collez avec <kbd>Ctrl</kbd> + <kbd>V</kbd>, ou glissez l'image. Vous pouvez aussi l'ajouter plus tard depuis <em>Historique → Capture après</em>.
+            </p>
+            <p class="screenshot-help-mobile">
+              <strong>Avant :</strong> touchez la zone et choisissez une photo.<br>
+              <strong>Après :</strong> faites une capture d'écran, puis touchez la zone « Capture après » pour importer l'image depuis votre galerie.
+            </p>
+            <div class="screenshot-grid">
+              <div class="screenshot-box">
+                <label for="screenshotBefore">Capture avant le trade</label>
+                <div class="screenshot-preview" id="previewBefore" tabindex="0" data-target="before">
+                  <span class="placeholder-text">Cliquer, coller (Ctrl+V) ou glisser une image</span>
+                </div>
+                <input type="file" id="screenshotBefore" accept="image/*" class="file-input">
+                <button type="button" class="btn btn-ghost btn-sm clear-screenshot" data-target="before">Supprimer</button>
+              </div>
+              <div class="screenshot-box">
+                <label for="screenshotAfter">Capture après le trade</label>
+                <div class="screenshot-preview" id="previewAfter" tabindex="0" data-target="after">
+                  <span class="placeholder-text">Cliquer, coller (Ctrl+V) ou glisser une image</span>
+                </div>
+                <input type="file" id="screenshotAfter" accept="image/*" class="file-input">
+                <button type="button" class="btn btn-ghost btn-sm clear-screenshot" data-target="after">Supprimer</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost" id="resetTradeForm">Réinitialiser</button>
+            <button type="submit" class="btn btn-primary" id="saveTradeBtn">Enregistrer le trade</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- HISTORIQUE -->
+      <section class="section" id="section-trades">
+        <div class="card">
+          <div class="card-header">
+            <h2>Suivi des trades</h2>
+            <div class="filter-bar">
+              <input type="week" id="filterWeek" class="filter-input" title="Filtrer par semaine">
+              <input type="date" id="filterDate" class="filter-input" title="Filtrer par jour">
+              <input type="search" id="filterAsset" class="filter-input" placeholder="Actif (EUR/USD…)" title="Rechercher par actif">
+              <button class="btn btn-ghost btn-sm" id="clearFilter">Tout afficher</button>
+            </div>
+          </div>
+          <div class="table-wrap desktop-only">
+            <table class="data-table" id="allTradesTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Actif</th>
+                  <th>Sens</th>
+                  <th>Entrée</th>
+                  <th>Stop Loss</th>
+                  <th>Objectif</th>
+                  <th>Risque €</th>
+                  <th>Résultat €</th>
+                  <th>R Multiple</th>
+                  <th>Plan</th>
+                  <th>Commentaire</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="trade-cards mobile-only" id="allTradesCards"></div>
+        </div>
+      </section>
+
+      <!-- SYNC MOBILE -->
+      <section class="section" id="section-sync">
+        <div class="card">
+          <h2>Installer l'application</h2>
+          <p class="sync-intro">Installez le journal sur votre écran d'accueil pour un accès rapide, comme une application native.</p>
+          <button class="btn btn-primary hidden" id="installPwaBtn" type="button">Installer l'application</button>
+          <p class="sync-note pwa-install-note" id="pwaInstallNote"></p>
+        </div>
+        <div class="card">
+          <h2>Lancer en mode application</h2>
+          <p class="sync-intro">Pour installer la PWA et le mode offline complet, lancez le serveur local inclus :</p>
+          <ol class="sync-steps">
+            <li>Windows : double-cliquez <code>start.bat</code> dans le dossier du projet</li>
+            <li>Ou en terminal : <code>npx serve . -p 3000</code></li>
+            <li>Ouvrez <code>http://localhost:3000</code> dans Chrome ou Edge</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h2>Synchroniser avec votre téléphone</h2>
+          <p class="sync-intro">Les données sont stockées localement par appareil. Pour les retrouver sur mobile :</p>
+          <ol class="sync-steps">
+            <li>Copiez le dossier <code>journal-trading</code> sur votre téléphone (USB, Google Drive, WhatsApp…)</li>
+            <li>Ouvrez <code>index.html</code> dans Chrome/Safari mobile</li>
+            <li>Ou exportez vos données ci-dessous et importez-les sur le téléphone</li>
+          </ol>
+          <div class="sync-actions">
+            <button class="btn btn-primary" id="exportBackupBtn">Exporter mes données (.json)</button>
+            <button class="btn btn-ghost" id="importBackupBtn">Importer des données</button>
+            <input type="file" id="importBackupInput" accept=".json,application/json" class="file-input">
+          </div>
+          <p class="sync-note">L'export inclut tous vos trades, captures d'écran et notes.</p>
+        </div>
+      </section>
+
+      <!-- ANALYSE HEBDO -->
+      <section class="section" id="section-weekly">
+        <div class="card">
+          <div class="card-header">
+            <h2>Analyse hebdomadaire</h2>
+            <input type="week" id="weeklyWeek" class="filter-input">
+          </div>
+          <div class="weekly-summary" id="weeklySummary"></div>
+        </div>
+        <div class="card">
+          <h2>Détail journalier</h2>
+          <p class="sync-intro">Trades enregistrés jour par jour pour la semaine sélectionnée.</p>
+          <div class="table-wrap desktop-only">
+            <table class="data-table" id="weeklyDailyTable">
+              <thead>
+                <tr>
+                  <th>Jour</th>
+                  <th>Date</th>
+                  <th>Trades</th>
+                  <th>Gagnants</th>
+                  <th>Perdants</th>
+                  <th>Résultat net</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="weeklyDailyCards" class="trade-cards mobile-only"></div>
+          <div id="weeklyTradesByDay"></div>
+        </div>
+        <div class="card">
+          <h2>Notes de la semaine</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="weeklyGood">Ce qui a bien fonctionné cette semaine</label>
+              <textarea id="weeklyGood" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="weeklyImprove">Ce qui doit être amélioré</label>
+              <textarea id="weeklyImprove" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="weeklyErrors">Erreurs récurrentes observées</label>
+              <textarea id="weeklyErrors" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="weeklyGoal">Objectif principal pour la semaine prochaine</label>
+              <textarea id="weeklyGoal" rows="4"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="saveWeeklyNotes">Sauvegarder l'analyse</button>
+        </div>
+      </section>
+
+      <!-- CHECKLIST -->
+      <section class="section" id="section-checklist">
+        <div class="card">
+          <h2>Checklist avant de prendre un trade</h2>
+          <ul class="checklist" id="preTradeChecklist">
+            <li><label><input type="checkbox"> Le trade respecte ma stratégie.</label></li>
+            <li><label><input type="checkbox"> Le risque est défini avant l'entrée.</label></li>
+            <li><label><input type="checkbox"> Le Stop Loss est placé à un niveau logique.</label></li>
+            <li><label><input type="checkbox"> L'objectif est réaliste.</label></li>
+            <li><label><input type="checkbox"> Le ratio risque/rendement est acceptable.</label></li>
+            <li><label><input type="checkbox"> Je ne suis pas en train de trader sous l'émotion.</label></li>
+            <li><label><input type="checkbox"> Je n'augmente pas la taille de position pour me refaire.</label></li>
+            <li><label><input type="checkbox"> J'accepte la perte potentielle avant d'entrer.</label></li>
+          </ul>
+          <button class="btn btn-ghost btn-sm" id="resetChecklist">Réinitialiser la checklist</button>
+        </div>
+      </section>
+
+      <!-- NOTES -->
+      <section class="section" id="section-notes">
+        <div class="card">
+          <h2>Notes personnelles</h2>
+          <textarea id="personalNotes" rows="16" placeholder="Vos réflexions, observations, rappels..."></textarea>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <input type="file" id="quickScreenshotInput" accept="image/*" class="file-input">
+
+  <nav class="bottom-nav mobile-only" id="bottomNav" aria-label="Navigation mobile">
+    <button class="bottom-nav-item" data-section="dashboard" aria-label="Tableau de bord">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button class="bottom-nav-item" data-section="trades" aria-label="Historique">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Trades</span>
+    </button>
+    <button class="bottom-nav-item bottom-nav-fab" data-section="new-trade" aria-label="Nouveau trade">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button class="bottom-nav-item" data-section="sync" aria-label="Synchronisation">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9"/><path d="M21 3v6h-6"/><path d="M3 12a9 9 0 0 1 9-9"/><path d="M3 21v-6h6"/></svg>
+      <span>Sync</span>
+    </button>
+    <button class="bottom-nav-item" id="bottomMenuBtn" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span>Menu</span>
+    </button>
+  </nav>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="modal-overlay" id="userModal" role="dialog" aria-modal="true" aria-labelledby="userModalTitle">
+    <div class="modal">
+      <button type="button" class="modal-close" id="userModalClose" aria-label="Fermer" hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <h2 id="userModalTitle">Choisir un profil</h2>
+      <p class="modal-intro">Chaque profil possède ses propres trades et statistiques. Aucune base de données — tout est stocké sur cet appareil.</p>
+      <div class="user-list" id="userList"></div>
+      <form id="createUserForm" class="create-user-form">
+        <div class="form-group">
+          <label for="newUserName">Créer un nouveau profil</label>
+          <input type="text" id="newUserName" placeholder="Votre prénom ou pseudo" required maxlength="40">
+        </div>
+        <button type="submit" class="btn btn-primary">Créer et continuer</button>
+      </form>
+      <button type="button" class="btn btn-ghost modal-cancel" id="userModalCancel" hidden>Annuler</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="confirmModal" role="alertdialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+    <div class="modal modal-sm">
+      <h2 id="confirmModalTitle">Confirmation</h2>
+      <p class="modal-intro" id="confirmModalMessage"></p>
+      <div class="confirm-actions">
+        <button type="button" class="btn btn-ghost" id="confirmModalCancel">Annuler</button>
+        <button type="button" class="btn btn-primary" id="confirmModalOk">Confirmer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="export-word.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

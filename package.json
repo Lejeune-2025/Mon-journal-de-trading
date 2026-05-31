@@ -1,0 +1,8 @@
+{
+  "name": "journal-trading",
+  "private": true,
+  "description": "Journal de trading professionnel — local, sans base de données",
+  "scripts": {
+    "start": "npx --yes serve . -p 3000"
+  }
+}
