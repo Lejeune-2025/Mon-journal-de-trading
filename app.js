@@ -1593,6 +1593,23 @@
     });
   }
 
+  function initErrorCheckboxLogic() {
+    const panel = $('#errors');
+    if (!panel) return;
+    const noneValue = 'Aucune erreur';
+    panel.addEventListener('change', (e) => {
+      const target = e.target;
+      if (target.type !== 'checkbox') return;
+      const boxes = [...panel.querySelectorAll('input[type="checkbox"]')];
+      const noneBox = panel.querySelector(`input[value="${noneValue}"]`);
+      if (target.value === noneValue && target.checked) {
+        boxes.forEach((cb) => { if (cb !== target) cb.checked = false; });
+      } else if (target.checked && noneBox) {
+        noneBox.checked = false;
+      }
+    });
+  }
+
   function initForms() {
     $('#editProfileBtn')?.addEventListener('click', () => setProfileEditMode(true));
     $('#cancelProfileBtn')?.addEventListener('click', () => setProfileEditMode(false));
@@ -1630,6 +1647,7 @@
     ['marketConditions', 'timeframes', 'errors'].forEach((id) => {
       $$(`#${id} input`).forEach((cb) => cb.addEventListener('change', autoSaveCurrentTrade));
     });
+    initErrorCheckboxLogic();
 
     $('#tradeForm').addEventListener('submit', saveTrade);
     $('#resetTradeForm').addEventListener('click', resetTradeForm);

@@ -290,30 +290,58 @@
               <label for="entryReason">Raison de l'entrée</label>
               <textarea id="entryReason" rows="4" placeholder="Signal d'entrée, configuration technique, contexte de marché..."></textarea>
             </div>
-            <div class="form-group">
+            <div class="form-group form-group--options">
               <label>Conditions de marché</label>
-              <div class="checkbox-grid" id="marketConditions">
-                <label class="checkbox-label"><input type="checkbox" value="Tendance haussière"> Tendance haussière</label>
-                <label class="checkbox-label"><input type="checkbox" value="Tendance baissière"> Tendance baissière</label>
-                <label class="checkbox-label"><input type="checkbox" value="Range"> Range</label>
-                <label class="checkbox-label"><input type="checkbox" value="Forte volatilité"> Forte volatilité</label>
-                <label class="checkbox-label"><input type="checkbox" value="Faible volatilité"> Faible volatilité</label>
+              <p class="field-hint">Sélectionnez une ou plusieurs conditions observées sur ce trade.</p>
+              <div class="checkbox-panel" id="marketConditions">
+                <fieldset class="checkbox-group">
+                  <legend class="checkbox-group-label">Tendance</legend>
+                  <div class="option-chips">
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Tendance haussière"> Tendance haussière</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Tendance baissière"> Tendance baissière</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Range"> Range / consolidation</label>
+                  </div>
+                </fieldset>
+                <fieldset class="checkbox-group">
+                  <legend class="checkbox-group-label">Volatilité</legend>
+                  <div class="option-chips option-chips--pair">
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Forte volatilité"> Forte volatilité</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Faible volatilité"> Faible volatilité</label>
+                  </div>
+                </fieldset>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group form-group--options">
               <label>Timeframe utilisé</label>
-              <div class="checkbox-grid" id="timeframes">
-                <label class="checkbox-label"><input type="checkbox" value="M1"> M1</label>
-                <label class="checkbox-label"><input type="checkbox" value="M5"> M5</label>
-                <label class="checkbox-label"><input type="checkbox" value="M15"> M15</label>
-                <label class="checkbox-label"><input type="checkbox" value="M30"> M30</label>
-                <label class="checkbox-label"><input type="checkbox" value="H1"> H1</label>
-                <label class="checkbox-label"><input type="checkbox" value="H4"> H4</label>
-                <label class="checkbox-label"><input type="checkbox" value="Daily"> Daily</label>
-                <label class="checkbox-label checkbox-other">
-                  <input type="checkbox" value="Autre" id="timeframeOtherCheck"> Autre :
-                  <input type="text" id="timeframeOther" placeholder="..." class="inline-input">
-                </label>
+              <p class="field-hint">Unités de temps consultées pour l’analyse ou l’exécution.</p>
+              <div class="checkbox-panel checkbox-panel--timeframes" id="timeframes">
+                <fieldset class="checkbox-group">
+                  <legend class="checkbox-group-label">Minutes</legend>
+                  <div class="option-chips option-chips--compact">
+                    <label class="checkbox-label checkbox-chip checkbox-chip--short"><input type="checkbox" value="M1"> M1</label>
+                    <label class="checkbox-label checkbox-chip checkbox-chip--short"><input type="checkbox" value="M5"> M5</label>
+                    <label class="checkbox-label checkbox-chip checkbox-chip--short"><input type="checkbox" value="M15"> M15</label>
+                    <label class="checkbox-label checkbox-chip checkbox-chip--short"><input type="checkbox" value="M30"> M30</label>
+                  </div>
+                </fieldset>
+                <fieldset class="checkbox-group">
+                  <legend class="checkbox-group-label">Heures &amp; supérieur</legend>
+                  <div class="option-chips option-chips--compact option-chips--triple">
+                    <label class="checkbox-label checkbox-chip checkbox-chip--short"><input type="checkbox" value="H1"> H1</label>
+                    <label class="checkbox-label checkbox-chip checkbox-chip--short"><input type="checkbox" value="H4"> H4</label>
+                    <label class="checkbox-label checkbox-chip checkbox-chip--short"><input type="checkbox" value="Daily"> Daily</label>
+                  </div>
+                </fieldset>
+                <fieldset class="checkbox-group checkbox-group--other">
+                  <legend class="checkbox-group-label">Autre</legend>
+                  <label class="checkbox-label checkbox-chip checkbox-other">
+                    <span class="checkbox-other-row">
+                      <input type="checkbox" value="Autre" id="timeframeOtherCheck">
+                      <span>Timeframe personnalisé</span>
+                    </span>
+                    <input type="text" id="timeframeOther" placeholder="Ex. W1, 2H, Renko…" class="inline-input" aria-label="Timeframe personnalisé">
+                  </label>
+                </fieldset>
               </div>
             </div>
           </div>
@@ -375,18 +403,34 @@
                 <label class="radio-label"><input type="radio" name="planRespected" value="Partiellement"> Partiellement</label>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group form-group--options">
               <label>Erreurs commises</label>
-              <div class="checkbox-grid" id="errors">
-                <label class="checkbox-label"><input type="checkbox" value="Entrée trop tôt"> Entrée trop tôt</label>
-                <label class="checkbox-label"><input type="checkbox" value="Entrée trop tard"> Entrée trop tard</label>
-                <label class="checkbox-label"><input type="checkbox" value="Stop Loss mal placé"> Stop Loss mal placé</label>
-                <label class="checkbox-label"><input type="checkbox" value="Objectif mal défini"> Objectif mal défini</label>
-                <label class="checkbox-label"><input type="checkbox" value="Sur-levier"> Sur-levier</label>
-                <label class="checkbox-label"><input type="checkbox" value="Revenge trading"> Revenge trading</label>
-                <label class="checkbox-label"><input type="checkbox" value="Non-respect du plan"> Non-respect du plan</label>
-                <label class="checkbox-label"><input type="checkbox" value="Trade impulsif"> Trade impulsif</label>
-                <label class="checkbox-label"><input type="checkbox" value="Aucune erreur"> Aucune erreur</label>
+              <p class="field-hint">Cochez tout ce qui s’applique à ce trade.</p>
+              <div class="checkbox-panel checkbox-panel--errors" id="errors">
+                <fieldset class="checkbox-group">
+                  <legend class="checkbox-group-label">Timing &amp; exécution</legend>
+                  <div class="option-chips option-chips--stack">
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Entrée trop tôt"> Entrée trop tôt</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Entrée trop tard"> Entrée trop tard</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Stop Loss mal placé"> Stop Loss mal placé</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Objectif mal défini"> Objectif mal défini</label>
+                  </div>
+                </fieldset>
+                <fieldset class="checkbox-group">
+                  <legend class="checkbox-group-label">Risque &amp; discipline</legend>
+                  <div class="option-chips option-chips--stack">
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Sur-levier"> Sur-levier</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Revenge trading"> Revenge trading</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Non-respect du plan"> Non-respect du plan</label>
+                    <label class="checkbox-label checkbox-chip"><input type="checkbox" value="Trade impulsif"> Trade impulsif</label>
+                  </div>
+                </fieldset>
+                <fieldset class="checkbox-group checkbox-group--success">
+                  <legend class="checkbox-group-label">Bilan</legend>
+                  <div class="option-chips option-chips--stack">
+                    <label class="checkbox-label checkbox-chip checkbox-chip--success"><input type="checkbox" value="Aucune erreur"> Aucune erreur constatée</label>
+                  </div>
+                </fieldset>
               </div>
             </div>
             <div class="form-group">
