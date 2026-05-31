@@ -41,6 +41,12 @@
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
 
+  const curr = () => window.TradingJournalCurrency;
+  const formatMoney = (n) => curr().formatMoney(n);
+  const formatMoneyUnsigned = (n) => curr().formatMoneyUnsigned(n);
+  const formatMoneyAxis = (n, d) => curr().formatMoneyAxis(n, d);
+  const withCurrency = (n) => curr().withCurrency(n);
+
   function escapeHtml(str) {
     if (str == null) return '';
     return String(str)
@@ -561,13 +567,6 @@
     });
   }
 
-  function formatEuro(n) {
-    if (n === null || n === undefined || n === '' || isNaN(n)) return '—';
-    const num = parseFloat(n);
-    const sign = num >= 0 ? '+' : '';
-    return `${sign}${num.toFixed(2)} €`;
-  }
-
   function getCheckedValues(containerId) {
     return [...$$(`#${containerId} input:checked`)].map((cb) => cb.value);
   }
@@ -729,16 +728,16 @@
     const items = [
       { label: 'Total trades', value: kpi.total, cls: 'neutral' },
       { label: 'Taux de réussite', value: `${kpi.winRate} %`, cls: 'neutral' },
-      { label: 'Résultat net', value: formatEuro(kpi.net), cls: kpi.net >= 0 ? 'positive' : 'negative' },
+      { label: 'Résultat net', value: formatMoney(kpi.net), cls: kpi.net >= 0 ? 'positive' : 'negative' },
       { label: 'Profit Factor', value: kpi.profitFactor, cls: parseFloat(kpi.profitFactor) >= 1 ? 'positive' : 'negative' },
-      { label: 'Gain moyen', value: `${kpi.avgWin} €`, cls: 'positive' },
-      { label: 'Perte moyenne', value: `${kpi.avgLoss} €`, cls: 'negative' },
+      { label: 'Gain moyen', value: formatMoneyUnsigned(kpi.avgWin), cls: 'positive' },
+      { label: 'Perte moyenne', value: formatMoneyUnsigned(kpi.avgLoss), cls: 'negative' },
       { label: 'Ratio R moyen', value: kpi.avgR, cls: parseFloat(kpi.avgR) >= 0 ? 'positive' : 'negative' },
-      { label: 'Drawdown max', value: `${kpi.maxDD.toFixed(2)} €`, cls: 'negative' },
+      { label: 'Drawdown max', value: formatMoneyUnsigned(kpi.maxDD), cls: 'negative' },
       { label: 'Respect du plan', value: `${kpi.planRate} %`, cls: parseFloat(kpi.planRate) >= 70 ? 'positive' : 'negative' },
       { label: 'Trades gagnants', value: kpi.winners, cls: 'positive' },
       { label: 'Trades perdants', value: kpi.losers, cls: 'negative' },
-      { label: 'Risque moyen', value: `${kpi.avgRisk} €`, cls: 'neutral' }
+      { label: 'Risque moyen', value: formatMoneyUnsigned(kpi.avgRisk), cls: 'neutral' }
     ];
 
     $('#kpiGrid').innerHTML = items.map((i) => `
@@ -800,21 +799,21 @@
       const v = yMin + (g / 4) * (yMax - yMin);
       const y = toY(v).toFixed(1);
       grid += `<line x1="${pad.l}" y1="${y}" x2="${pad.l + innerW}" y2="${y}" class="chart-grid"/>`;
-      grid += `<text x="${pad.l - 8}" y="${(+y + 4).toFixed(1)}" class="chart-axis" text-anchor="end">${v.toFixed(0)} €</text>`;
+      grid += `<text x="${pad.l - 8}" y="${(+y + 4).toFixed(1)}" class="chart-axis" text-anchor="end">${formatMoneyAxis(v)}</text>`;
     }
 
     const scopeLabel = dashboardChartScope === 'week' ? 'semaine en cours' : 'historique complet';
     wrap.innerHTML = `
       <div class="chart-meta">
         <span>Période : <strong>${scopeLabel}</strong></span>
-        <span>Départ : <strong>${start.toFixed(2)} €</strong></span>
-        <span>Actuel : <strong class="${end >= start ? 'positive' : 'negative'}">${end.toFixed(2)} €</strong></span>
+        <span>Départ : <strong>${formatMoneyUnsigned(start)}</strong></span>
+        <span>Actuel : <strong class="${end >= start ? 'positive' : 'negative'}">${formatMoneyUnsigned(end)}</strong></span>
       </div>
       <svg class="equity-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Courbe d'équité">
         ${grid}
         <polygon points="${areaPts}" fill="${color}" opacity="0.1"/>
         <polyline points="${linePts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-        ${points.map((p, i) => `<circle cx="${toX(i).toFixed(1)}" cy="${toY(p.y).toFixed(1)}" r="4" fill="${color}"><title>${escapeHtml(p.label)}${p.asset ? ' — ' + escapeHtml(p.asset) : ''} : ${p.y.toFixed(2)} €</title></circle>`).join('')}
+        ${points.map((p, i) => `<circle cx="${toX(i).toFixed(1)}" cy="${toY(p.y).toFixed(1)}" r="4" fill="${color}"><title>${escapeHtml(p.label)}${p.asset ? ' — ' + escapeHtml(p.asset) : ''} : ${formatMoneyUnsigned(p.y)}</title></circle>`).join('')}
         <text x="${pad.l}" y="${H - 10}" class="chart-axis" text-anchor="start">${points[1]?.label || ''}</text>
         <text x="${pad.l + innerW}" y="${H - 10}" class="chart-axis" text-anchor="end">${points[points.length - 1].label}</text>
       </svg>`;
@@ -902,12 +901,12 @@
           ${planBadge(t.planRespected)}
         </div>
         <dl class="trade-card-grid">
-          <dt>Résultat</dt><dd class="${resultClass(t.resultAmount)}">${formatEuro(t.resultAmount)}</dd>
+          <dt>Résultat</dt><dd class="${resultClass(t.resultAmount)}">${formatMoney(t.resultAmount)}</dd>
           <dt>R Multiple</dt><dd>${calcActualRR(t.resultAmount, t.riskAmount) || '—'}</dd>
           ${full ? `<dt>Entrée</dt><dd>${escapeHtml(t.entryPrice) || '—'}</dd>
           <dt>Stop Loss</dt><dd>${escapeHtml(t.stopLoss) || '—'}</dd>
           <dt>Objectif</dt><dd>${escapeHtml(t.takeProfit) || '—'}</dd>
-          <dt>Risque</dt><dd>${t.riskAmount ? escapeHtml(t.riskAmount) + ' €' : '—'}</dd>` : ''}
+          <dt>Risque</dt><dd>${t.riskAmount ? escapeHtml(withCurrency(t.riskAmount)) : '—'}</dd>` : ''}
         </dl>
         ${comment ? `<p class="trade-card-comment">${escapeHtml(comment)}</p>` : ''}
         <div class="trade-card-actions">
@@ -941,7 +940,7 @@
         <td>${formatDate(t.date)}</td>
         <td>${escapeHtml(t.asset)}</td>
         <td>${escapeHtml(t.direction)}</td>
-        <td class="${resultClass(t.resultAmount)}">${formatEuro(t.resultAmount)}</td>
+        <td class="${resultClass(t.resultAmount)}">${formatMoney(t.resultAmount)}</td>
         <td>${calcActualRR(t.resultAmount, t.riskAmount) || '—'}</td>
         <td>${planBadge(t.planRespected)}</td>
       </tr>
@@ -970,8 +969,8 @@
         <td>${escapeHtml(t.entryPrice) || '—'}</td>
         <td>${escapeHtml(t.stopLoss) || '—'}</td>
         <td>${escapeHtml(t.takeProfit) || '—'}</td>
-        <td>${t.riskAmount ? escapeHtml(t.riskAmount) + ' €' : '—'}</td>
-        <td class="${resultClass(t.resultAmount)}">${formatEuro(t.resultAmount)}</td>
+        <td>${t.riskAmount ? escapeHtml(withCurrency(t.riskAmount)) : '—'}</td>
+        <td class="${resultClass(t.resultAmount)}">${formatMoney(t.resultAmount)}</td>
         <td>${calcActualRR(t.resultAmount, t.riskAmount) || '—'}</td>
         <td>${planBadge(t.planRespected)}</td>
         <td style="font-family:var(--font);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(comment)}">${escapeHtml(comment) || '—'}</td>
@@ -1011,12 +1010,12 @@
       <div class="weekly-stat"><div class="weekly-stat-label">Perdants</div><div class="weekly-stat-value" style="color:var(--danger)">${kpi.losers}</div></div>
       <div class="weekly-stat"><div class="weekly-stat-label">Break-even</div><div class="weekly-stat-value">${kpi.breakeven}</div></div>
       <div class="weekly-stat"><div class="weekly-stat-label">Taux de réussite</div><div class="weekly-stat-value">${kpi.winRate} %</div></div>
-      <div class="weekly-stat"><div class="weekly-stat-label">Gain total</div><div class="weekly-stat-value" style="color:var(--primary)">${kpi.totalGains.toFixed(2)} €</div></div>
-      <div class="weekly-stat"><div class="weekly-stat-label">Perte totale</div><div class="weekly-stat-value" style="color:var(--danger)">${kpi.totalLosses.toFixed(2)} €</div></div>
-      <div class="weekly-stat"><div class="weekly-stat-label">Résultat net</div><div class="weekly-stat-value" style="color:${kpi.net >= 0 ? 'var(--primary)' : 'var(--danger)'}">${kpi.net.toFixed(2)} €</div></div>
-      <div class="weekly-stat"><div class="weekly-stat-label">Plus gros gain</div><div class="weekly-stat-value" style="color:var(--primary)">${kpi.biggestWin} €</div></div>
-      <div class="weekly-stat"><div class="weekly-stat-label">Plus grosse perte</div><div class="weekly-stat-value" style="color:var(--danger)">${kpi.biggestLoss} €</div></div>
-      <div class="weekly-stat"><div class="weekly-stat-label">Drawdown max</div><div class="weekly-stat-value" style="color:var(--danger)">${kpi.maxDD.toFixed(2)} €</div></div>
+      <div class="weekly-stat"><div class="weekly-stat-label">Gain total</div><div class="weekly-stat-value" style="color:var(--primary)">${formatMoneyUnsigned(kpi.totalGains)}</div></div>
+      <div class="weekly-stat"><div class="weekly-stat-label">Perte totale</div><div class="weekly-stat-value" style="color:var(--danger)">${formatMoneyUnsigned(kpi.totalLosses)}</div></div>
+      <div class="weekly-stat"><div class="weekly-stat-label">Résultat net</div><div class="weekly-stat-value" style="color:${kpi.net >= 0 ? 'var(--primary)' : 'var(--danger)'}">${formatMoney(kpi.net)}</div></div>
+      <div class="weekly-stat"><div class="weekly-stat-label">Plus gros gain</div><div class="weekly-stat-value" style="color:var(--primary)">${formatMoneyUnsigned(kpi.biggestWin)}</div></div>
+      <div class="weekly-stat"><div class="weekly-stat-label">Plus grosse perte</div><div class="weekly-stat-value" style="color:var(--danger)">${formatMoneyUnsigned(kpi.biggestLoss)}</div></div>
+      <div class="weekly-stat"><div class="weekly-stat-label">Drawdown max</div><div class="weekly-stat-value" style="color:var(--danger)">${formatMoneyUnsigned(kpi.maxDD)}</div></div>
       <div class="weekly-stat"><div class="weekly-stat-label">Ratio gain/perte moy.</div><div class="weekly-stat-value">${kpi.avgWin} / ${kpi.avgLoss}</div></div>
     `;
 
@@ -1052,7 +1051,7 @@
           <td>${kpi.total}</td>
           <td style="color:var(--primary)">${kpi.winners}</td>
           <td style="color:var(--danger)">${kpi.losers}</td>
-          <td class="${netCls}">${kpi.total ? formatEuro(kpi.net) : '—'}</td>
+          <td class="${netCls}">${kpi.total ? formatMoney(kpi.net) : '—'}</td>
         </tr>`;
     }).join('');
 
@@ -1071,7 +1070,7 @@
           <dl class="trade-card-grid">
             <dt>Gagnants</dt><dd style="color:var(--primary)">${kpi.winners}</dd>
             <dt>Perdants</dt><dd style="color:var(--danger)">${kpi.losers}</dd>
-            <dt>Net</dt><dd class="${kpi.net >= 0 ? 'positive' : kpi.net < 0 ? 'negative' : ''}">${kpi.total ? formatEuro(kpi.net) : '—'}</dd>
+            <dt>Net</dt><dd class="${kpi.net >= 0 ? 'positive' : kpi.net < 0 ? 'negative' : ''}">${kpi.total ? formatMoney(kpi.net) : '—'}</dd>
           </dl>
         </article>`;
     }).join('');
@@ -1114,7 +1113,7 @@
       <dt>Nom du trader</dt><dd>${profileVal(p.traderName || user?.name)}</dd>
       <dt>Marché principal</dt><dd>${profileVal(p.mainMarket)}</dd>
       <dt>Stratégie</dt><dd>${profileVal(p.strategy)}</dd>
-      <dt>Capital de départ</dt><dd>${profileVal(p.startingCapital, ' €')}</dd>
+      <dt>Capital de départ</dt><dd>${p.startingCapital ? formatMoneyUnsigned(p.startingCapital) : '<span class="text-muted">—</span>'}</dd>
       <dt>Risque max / trade</dt><dd>${profileVal(p.maxRisk, ' %')}</dd>`;
   }
 
@@ -1196,7 +1195,7 @@
     if (!maxRisk || !capital || isNaN(risk)) return;
     const maxAllowed = capital * maxRisk / 100;
     if (risk > maxAllowed * 1.05) {
-      showToast(`Risque (${risk.toFixed(2)} €) supérieur à ${maxRisk}% du capital (${maxAllowed.toFixed(2)} €)`);
+      showToast(`Risque (${formatMoneyUnsigned(risk)}) supérieur à ${maxRisk}% du capital (${formatMoneyUnsigned(maxAllowed)})`);
     }
   }
 
@@ -1509,7 +1508,7 @@
   }
 
   function exportCSV() {
-    const headers = ['Date', 'Actif', 'Sens', 'Entrée', 'Stop Loss', 'Objectif', 'Risque €', 'Résultat €', 'R Multiple', 'Plan respecté', 'Leçon'];
+    const headers = ['Date', 'Actif', 'Sens', 'Entrée', 'Stop Loss', 'Objectif', 'Risque $', 'Résultat $', 'R Multiple', 'Plan respecté', 'Leçon'];
     const rows = data.trades.map((t) => [
       formatDate(t.date), t.asset, t.direction, t.entryPrice, t.stopLoss, t.takeProfit,
       t.riskAmount, t.resultAmount, calcActualRR(t.resultAmount, t.riskAmount),

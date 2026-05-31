@@ -1,7 +1,8 @@
-const CACHE = 'trading-journal-v2';
+const CACHE = 'trading-journal-v3';
 const ASSETS = [
   './',
   './index.html',
+  './currency.js',
   './app.js',
   './export-word.js',
   './styles.css',

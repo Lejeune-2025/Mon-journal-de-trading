@@ -42,12 +42,10 @@ function formatDate(d) {
   return `${day}/${m}/${y}`;
 }
 
-function formatEuro(n) {
-  if (n === null || n === undefined || n === '' || isNaN(n)) return '—';
-  const num = parseFloat(n);
-  const sign = num >= 0 ? '+' : '';
-  return `${sign}${num.toFixed(2)} €`;
-}
+const cj = () => window.TradingJournalCurrency;
+const formatMoney = (n) => cj().formatMoney(n);
+const formatMoneyUnsigned = (n) => cj().formatMoneyUnsigned(n);
+const withCurrency = (n) => cj().withCurrency(n);
 
 function calcActualRR(resultAmount, riskAmount) {
   if (!resultAmount || !riskAmount || parseFloat(riskAmount) === 0) return '—';
@@ -175,9 +173,9 @@ async function buildTradeSection(docx, trade, index) {
     ['Stop Loss', trade.stopLoss],
     ['Objectif / Take Profit', trade.takeProfit],
     ['Taille de position', trade.positionSize],
-    ['Risque en €', trade.riskAmount ? `${trade.riskAmount} €` : ''],
+    ['Risque en $', trade.riskAmount ? withCurrency(trade.riskAmount) : ''],
     ['Résultat du trade', trade.resultType],
-    ['Montant du résultat', formatEuro(trade.resultAmount)],
+    ['Montant du résultat', formatMoney(trade.resultAmount)],
     ['Ratio R/R prévu', trade.plannedRR],
     ['Ratio R/R réalisé', trade.actualRR || calcActualRR(trade.resultAmount, trade.riskAmount)],
     ['R Multiple', calcActualRR(trade.resultAmount, trade.riskAmount)],
@@ -320,7 +318,7 @@ async function buildDocument(journalData, options = {}) {
     ['Nom du trader', profile.traderName],
     ['Marché principal', profile.mainMarket],
     ['Stratégie utilisée', profile.strategy],
-    ['Capital de départ', profile.startingCapital ? `${profile.startingCapital} €` : ''],
+    ['Capital de départ', profile.startingCapital ? formatMoneyUnsigned(profile.startingCapital) : ''],
     ['Risque maximum par trade', profile.maxRisk ? `${profile.maxRisk} %` : ''],
   ]));
 
@@ -336,11 +334,11 @@ async function buildDocument(journalData, options = {}) {
       ['Trades gagnants', kpi.winners],
       ['Trades perdants', kpi.losers],
       ['Taux de réussite', `${kpi.winRate} %`],
-      ['Gain moyen', `${kpi.avgWin} €`],
-      ['Perte moyenne', `${kpi.avgLoss} €`],
+      ['Gain moyen', formatMoneyUnsigned(kpi.avgWin)],
+      ['Perte moyenne', formatMoneyUnsigned(kpi.avgLoss)],
       ['Profit Factor', kpi.profitFactor],
-      ['Résultat net', `${kpi.net.toFixed(2)} €`],
-      ['Drawdown maximum', `${kpi.maxDD.toFixed(2)} €`],
+      ['Résultat net', formatMoney(kpi.net)],
+      ['Drawdown maximum', formatMoneyUnsigned(kpi.maxDD)],
       ['Respect du plan', `${kpi.planRate} %`],
     ]));
 
@@ -354,7 +352,7 @@ async function buildDocument(journalData, options = {}) {
 
       const headerRow = new TableRow({
         tableHeader: true,
-        children: ['Date', 'Actif', 'Sens', 'Résultat €', 'R Multiple', 'Plan'].map((h) =>
+        children: ['Date', 'Actif', 'Sens', 'Résultat $', 'R Multiple', 'Plan'].map((h) =>
           new TableCell({
             children: [new Paragraph({ children: [new TextRun({ text: h, bold: true, size: 18 })] })],
           })
@@ -367,7 +365,7 @@ async function buildDocument(journalData, options = {}) {
           new TableRow({
             children: [
               formatDate(t.date), t.asset, t.direction,
-              formatEuro(t.resultAmount),
+              formatMoney(t.resultAmount),
               calcActualRR(t.resultAmount, t.riskAmount),
               t.planRespected || '—',
             ].map((cell) =>
