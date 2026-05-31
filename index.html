@@ -483,14 +483,43 @@
 
       <!-- HISTORIQUE -->
       <section class="section" id="section-trades">
-        <div class="card">
-          <div class="card-header">
+        <div class="card card--history">
+          <div class="card-header card-header--trades">
             <h2>Suivi des trades</h2>
-            <div class="filter-bar">
-              <input type="week" id="filterWeek" class="filter-input" title="Filtrer par semaine">
-              <input type="date" id="filterDate" class="filter-input" title="Filtrer par jour">
-              <input type="search" id="filterAsset" class="filter-input" placeholder="Actif (EUR/USD…)" title="Rechercher par actif">
-              <button class="btn btn-ghost btn-sm" id="clearFilter">Tout afficher</button>
+            <div class="trade-filters">
+              <div class="trade-filters-panel">
+                <div class="trade-filters-grid">
+                  <div class="filter-field">
+                    <label for="filterWeek">Semaine</label>
+                    <input type="week" id="filterWeek" class="filter-input" title="Filtrer par semaine">
+                  </div>
+                  <div class="filter-field">
+                    <label for="filterDate">Date</label>
+                    <input type="date" id="filterDate" class="filter-input" title="Filtrer par jour">
+                  </div>
+                  <div class="filter-field filter-field--search">
+                    <label for="filterAsset">Rechercher un actif</label>
+                    <div class="search-field search-field--lg">
+                      <span class="search-field-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="11" cy="11" r="7"/>
+                          <path d="M20 20l-3-3"/>
+                        </svg>
+                      </span>
+                      <input type="search" id="filterAsset" class="filter-input search-input" placeholder="Ex. EUR/USD, BTC, XAUUSD, NAS100…" title="Rechercher par actif" autocomplete="off" enterkeyhint="search">
+                    </div>
+                  </div>
+                  <div class="trade-filters-actions">
+                    <button type="button" class="btn btn-ghost btn-sm trade-filters-reset" id="clearFilter" disabled aria-label="Réinitialiser tous les filtres">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      </svg>
+                      Réinitialiser
+                    </button>
+                  </div>
+                </div>
+                <p class="trade-filters-summary" id="historyFilterSummary" aria-live="polite"></p>
+              </div>
             </div>
           </div>
           <div class="table-wrap desktop-only">
@@ -555,9 +584,12 @@
       <!-- ANALYSE HEBDO -->
       <section class="section" id="section-weekly">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header card-header--weekly">
             <h2>Analyse hebdomadaire</h2>
-            <input type="week" id="weeklyWeek" class="filter-input">
+            <div class="week-picker-wrap">
+              <label for="weeklyWeek" class="week-picker-label">Semaine analysée</label>
+              <input type="week" id="weeklyWeek" class="filter-input" title="Choisir la semaine à analyser">
+            </div>
           </div>
           <div class="weekly-summary" id="weeklySummary"></div>
         </div>

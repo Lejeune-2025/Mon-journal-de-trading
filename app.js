@@ -958,6 +958,20 @@
     if (dateFilter) filtered = filterTradesByDate(filtered, dateFilter);
     if (assetFilter) filtered = filtered.filter((t) => (t.asset || '').toLowerCase().includes(assetFilter));
 
+    const hasFilters = !!(weekFilter || dateFilter || assetFilter);
+    const clearBtn = $('#clearFilter');
+    if (clearBtn) clearBtn.disabled = !hasFilters;
+
+    const summary = $('#historyFilterSummary');
+    if (summary) {
+      const total = data.trades.length;
+      const shown = filtered.length;
+      const tradeWord = shown === 1 ? 'trade' : 'trades';
+      summary.textContent = hasFilters
+        ? `${shown} ${tradeWord} affiché${shown !== 1 ? 's' : ''} sur ${total} · filtres actifs`
+        : `${shown} ${tradeWord} au total`;
+    }
+
     $('#allTradesTable tbody').innerHTML = filtered.map((t) => {
       const comment = t.lessonLearned || t.entryReason || '';
       const hasAfter = t.hasScreenshotAfter || !!t.screenshotAfter;
@@ -989,7 +1003,9 @@
 
     $('#allTradesCards').innerHTML = filtered.length
       ? filtered.map((t) => tradeCardHTML(t, true)).join('')
-      : '<p class="empty-state">Aucun trade pour cette période.</p>';
+      : `<p class="empty-state">${hasFilters
+        ? 'Aucun trade ne correspond à vos critères. Modifiez les filtres ou réinitialisez la recherche.'
+        : 'Aucun trade enregistré. Commencez par ajouter votre premier trade.'}</p>`;
   }
 
   function renderWeeklySummary() {
