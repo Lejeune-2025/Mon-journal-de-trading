@@ -631,8 +631,27 @@
     return { start: monday, end: sunday, key: toLocalDateStr(monday) };
   }
 
+  const CALENDAR_WEEK_KEY = 'tj_calendarWeek';
+
   function currentWeekInput() {
+    const probe = document.createElement('input');
+    probe.type = 'week';
+    try {
+      probe.valueAsDate = new Date();
+      if (probe.value) return probe.value;
+    } catch (_) { /* navigateurs anciens */ }
     return dateToWeekInput(new Date());
+  }
+
+  /** Passe à la semaine ISO en cours quand le calendrier change (nouvelle semaine). */
+  function syncCalendarWeekInputs() {
+    const cur = currentWeekInput();
+    const prev = sessionStorage.getItem(CALENDAR_WEEK_KEY);
+    const changed = prev !== cur;
+    if (changed) sessionStorage.setItem(CALENDAR_WEEK_KEY, cur);
+    const weeklyEl = $('#weeklyWeek');
+    if (weeklyEl && (changed || !weeklyEl.value)) weeklyEl.value = cur;
+    return { cur, changed };
   }
 
   function filterTradesByWeek(trades, weekVal) {
@@ -719,6 +738,7 @@
   }
 
   function renderKPIs() {
+    syncCalendarWeekInputs();
     const weekVal = currentWeekInput();
     const weekTrades = filterTradesByWeek(data.trades, weekVal);
     const kpi = computeKPIs(weekTrades);
@@ -1039,6 +1059,7 @@
     const weekVal = $('#weeklyWeek').value || currentWeekInput();
     $('#weeklyWeek').value = weekVal;
     const w = getWeekFromInput(weekVal);
+    if (!w) return;
     const trades = filterTradesByWeek(data.trades, weekVal);
     const kpi = computeKPIs(trades);
 
@@ -1575,7 +1596,15 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (typeof window.trackJournalSection === 'function') window.trackJournalSection(section);
 
-    if (section === 'weekly') renderWeeklySummary();
+    if (section === 'dashboard') {
+      renderKPIs();
+      renderRecentTrades();
+      renderEquityChart();
+    }
+    if (section === 'weekly') {
+      $('#weeklyWeek').value = currentWeekInput();
+      renderWeeklySummary();
+    }
     if (section === 'trades') renderAllTrades();
     if (section === 'profile') {
       updateUserDisplay();
@@ -1826,8 +1855,9 @@
     loadChecklist();
     resetTradeForm(false);
     $('#personalNotes').value = data.personalNotes || '';
+    sessionStorage.setItem(CALENDAR_WEEK_KEY, currentWeekInput());
     $('#weeklyWeek').value = currentWeekInput();
-    $('#filterWeek').value = currentWeekInput();
+    $('#filterWeek').value = '';
     $('#filterDate').value = '';
     initBottomNav();
     updateUserDisplay();
@@ -1836,10 +1866,29 @@
     if (typeof window.trackJournalSection === 'function') window.trackJournalSection('dashboard');
   }
 
+  function initWeekAutoRefresh() {
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      const { changed } = syncCalendarWeekInputs();
+      if (!changed) return;
+      const active = document.querySelector('.section.active')?.id;
+      if (active === 'section-dashboard') {
+        renderKPIs();
+        renderRecentTrades();
+        renderEquityChart();
+      } else if (active === 'section-weekly') {
+        renderWeeklySummary();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('pageshow', onVisible);
+  }
+
   async function init() {
     try {
       initUserModal();
       initNavigation();
+      initWeekAutoRefresh();
       initForms();
       initScreenshots();
       initEquityChart();
