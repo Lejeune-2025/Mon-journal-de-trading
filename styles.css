@@ -1725,8 +1725,22 @@ body.modal-open { overflow: hidden; }
 .create-user-form {
   border-top: 1px solid var(--border);
   padding-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
-.create-user-form .btn { width: 100%; margin-top: 0.5rem; }
+.create-user-form .btn { width: 100%; margin-top: 0; }
+
+/* Formulaire de création profil : mise en page stable mobile/desktop */
+.create-user-form .form-group {
+  width: 100%;
+}
+.create-user-form label {
+  margin-bottom: 0.25rem;
+}
+.create-user-form input[type="text"] {
+  font-size: 1rem;
+}
 
 .modal-sm { width: min(100%, 380px); }
 .confirm-actions {

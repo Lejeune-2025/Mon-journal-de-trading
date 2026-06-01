@@ -189,7 +189,7 @@
         </div>
         <div class="profile-row-actions">
           ${u.id !== currentUserId ? `<button type="button" class="btn btn-ghost btn-sm" data-activate-user="${escapeHtml(u.id)}">Activer</button>` : ''}
-          <button type="button" class="btn btn-danger btn-sm" data-delete-user="${escapeHtml(u.id)}">Supprimer</button>
+          ${u.id !== currentUserId ? `<button type="button" class="btn btn-danger btn-sm" data-delete-user="${escapeHtml(u.id)}">Supprimer</button>` : ''}
         </div>
       </div>
     `).join('');
@@ -291,6 +291,8 @@
       if (user) {
         $('#newUserName').value = '';
         await activateUser(user.id);
+        // L'utilisateur vient de créer son profil : on l'invite à compléter les paramètres critiques.
+        showToast(`Profil « ${user.name} » créé. Prenez le temps de vérifier et compléter vos informations dans « Profil utilisateur » → « Modifier ».`);
       }
     });
 
@@ -1878,12 +1880,17 @@
 
     $('#exportWordBtn').addEventListener('click', () => exportWord());
     $('#exportBtn').addEventListener('click', exportCSV);
-    $('#exportBackupBtn').addEventListener('click', exportBackup);
-    $('#importBackupBtn').addEventListener('click', () => $('#importBackupInput').click());
-    $('#importBackupInput').addEventListener('change', (e) => {
-      importBackup(e.target.files[0]);
-      e.target.value = '';
-    });
+    const exportBackupBtn = $('#exportBackupBtn');
+    const importBackupBtn = $('#importBackupBtn');
+    const importBackupInput = $('#importBackupInput');
+    if (exportBackupBtn) exportBackupBtn.addEventListener('click', exportBackup);
+    if (importBackupBtn && importBackupInput) {
+      importBackupBtn.addEventListener('click', () => importBackupInput.click());
+      importBackupInput.addEventListener('change', (e) => {
+        importBackup(e.target.files[0]);
+        e.target.value = '';
+      });
+    }
     $('#printBtn').addEventListener('click', () => window.print());
   }
 

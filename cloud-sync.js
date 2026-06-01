@@ -175,6 +175,13 @@
       const remoteAt = remotePayload?.updatedAt || remote.updatedAt;
       const localAt = cfg.localUpdatedAt;
 
+      // Sécurité “source-of-truth” : si on n'a jamais synchronisé localement (localUpdatedAt absent),
+      // éviter d'écraser les données locales avec un payload remote potentiellement vide.
+      if (!opts.force && !localAt) {
+        await push(true);
+        return { applied: false, reason: 'pushed-local-first' };
+      }
+
       if (!opts.force && localAt && remoteAt && new Date(localAt) >= new Date(remoteAt)) {
         await push(true);
         return { applied: false, reason: 'local-newer' };
@@ -218,7 +225,8 @@
         const data = await createAccount(label);
         await push(false);
         alert(
-          'Compte cloud créé.\n\n' +
+          'Compte cloud créé et données envoyées.\n\n' +
+          'Le profil trader, les trades et les captures de cet appareil ont été sauvegardés dans le cloud.\n\n' +
           `Identifiant : ${data.accountId}\n` +
           `Code secret : ${data.secret}\n\n` +
           'Copiez ces informations pour les utiliser sur un autre appareil.'

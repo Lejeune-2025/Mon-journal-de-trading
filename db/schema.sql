@@ -8,3 +8,4 @@ CREATE TABLE IF NOT EXISTS journal_accounts (
 );
 
 CREATE INDEX IF NOT EXISTS journal_accounts_updated_idx ON journal_accounts (updated_at DESC);
+
