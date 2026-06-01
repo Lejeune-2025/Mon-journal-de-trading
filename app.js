@@ -833,9 +833,36 @@
     return location.protocol === 'http:' || location.protocol === 'https:';
   }
 
+  const APP_BUILD = '4';
+
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator) || !isWebContext()) return;
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
+
+    navigator.serviceWorker
+      .register(`./sw.js?v=${APP_BUILD}`)
+      .then((reg) => {
+        reg.update();
+        if (reg.waiting && navigator.serviceWorker.controller) {
+          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+        reg.addEventListener('updatefound', () => {
+          const worker = reg.installing;
+          if (!worker) return;
+          worker.addEventListener('statechange', () => {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              worker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          });
+        });
+      })
+      .catch(() => {});
   }
 
   function updatePwaStatus() {

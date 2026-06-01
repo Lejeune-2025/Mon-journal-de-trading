@@ -106,6 +106,16 @@ Les stats ne s’activent **pas** en local (`localhost`) — uniquement sur l’
 > Normal si Analytics n’est pas activé sur Vercel, ou en local (`localhost`). Le site fonctionne quand même.  
 > Après activation dans le dashboard, l’erreur disparaît au prochain déploiement.
 
+### iPhone : ancienne mise en page après un déploiement ?
+
+Safari garde parfois l’ancien **Service Worker** / cache PWA.
+
+1. Déployer la dernière version sur Vercel (`git push`).
+2. Sur l’iPhone : ouvrir le lien Vercel dans **Safari** (pas seulement l’icône écran d’accueil).
+3. Tirer vers le bas pour **rafraîchir** (ou fermer l’onglet et rouvrir).
+4. Si besoin : Réglages Safari → **Effacer historique et données** (ou supprimer le site dans Réglages → Safari → Avancé → Données de sites).
+5. Réinstaller la PWA après mise à jour si vous utilisez l’icône sur l’écran d’accueil.
+
 #### Ce qui est mesuré
 
 | Métrique | Détail |
