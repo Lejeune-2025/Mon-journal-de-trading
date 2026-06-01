@@ -232,14 +232,10 @@ body.app-ready .app {
 }
 
 .menu-toggle-logo {
-  gap: 0.45rem;
-  padding: 0.35rem 0.5rem;
+  gap: 0;
+  padding: 0.35rem;
   border: 1px solid transparent;
   border-radius: 8px;
-  font-family: var(--font);
-  font-size: 0.82rem;
-  font-weight: 600;
-  white-space: nowrap;
 }
 
 .menu-toggle-logo svg {
@@ -1214,15 +1210,10 @@ textarea { resize: vertical; min-height: 80px; }
   }
   .menu-toggle { display: inline-flex; }
   .menu-toggle-logo {
-    min-width: auto;
+    width: 44px;
     min-height: 44px;
-    font-size: 0.78rem;
-    padding: 0.35rem 0.55rem;
-  }
-  .menu-toggle-logo span {
-    max-width: 110px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    min-width: 44px;
+    padding: 0.35rem;
   }
   .topbar {
     padding: calc(0.75rem + env(safe-area-inset-top)) 1rem 0.75rem;

@@ -931,6 +931,11 @@
     return location.protocol === 'http:' || location.protocol === 'https:';
   }
 
+  function isIosDevice() {
+    const ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+
   const APP_BUILD = '5';
 
   function registerServiceWorker() {
@@ -979,22 +984,39 @@
 
   function initPwaInstall() {
     const btn = $('#installPwaBtn');
+    if (!btn) return;
     updatePwaStatus();
+    if (isWebContext() && !window.matchMedia('(display-mode: standalone)').matches) {
+      btn.classList.remove('hidden');
+    }
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredInstallPrompt = e;
-      btn?.classList.remove('hidden');
+      btn.classList.remove('hidden');
       $('#pwaInstallNote')?.classList.add('hidden');
     });
-    btn?.addEventListener('click', async () => {
-      if (!deferredInstallPrompt) return;
-      deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-      deferredInstallPrompt = null;
-      btn.classList.add('hidden');
+
+    btn.addEventListener('click', async () => {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        btn.classList.add('hidden');
+        return;
+      }
+
+      // Fallback : iOS n'expose pas beforeinstallprompt
+      if (isIosDevice()) {
+        showToast('iPhone/iPad : Safari → Partager → Sur l’écran d’accueil');
+        return;
+      }
+
+      // Fallback Android/desktop sans prompt natif
+      showToast('Ouvrez le menu du navigateur puis choisissez « Installer l’application »');
     });
+
     window.addEventListener('appinstalled', () => {
-      btn?.classList.add('hidden');
+      btn.classList.add('hidden');
       showToast('Application installée');
     });
   }
