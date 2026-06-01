@@ -414,6 +414,81 @@
     return idbGet(imgKey(tradeId, target));
   }
 
+  async function idbExportAllImages() {
+    const db = await openImageDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const store = tx.objectStore(IDB_STORE);
+      const keysReq = store.getAllKeys();
+      const valsReq = store.getAll();
+      keysReq.onsuccess = () => {
+        valsReq.onsuccess = () => {
+          const images = {};
+          (keysReq.result || []).forEach((key, i) => {
+            if (valsReq.result?.[i]) images[key] = valsReq.result[i];
+          });
+          resolve(images);
+        };
+        valsReq.onerror = () => reject(valsReq.error);
+      };
+      keysReq.onerror = () => reject(keysReq.error);
+    });
+  }
+
+  async function idbApplyImages(images) {
+    const db = await openImageDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      store.clear().onsuccess = () => {
+        const entries = Object.entries(images || {});
+        if (!entries.length) return resolve();
+        let done = 0;
+        entries.forEach(([key, val]) => {
+          const req = store.put(val, key);
+          req.onsuccess = () => { if (++done === entries.length) resolve(); };
+          req.onerror = () => reject(req.error);
+        });
+      };
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function buildCloudPayload() {
+    const users = loadUsersRegistry();
+    const userData = {};
+    users.forEach((u) => {
+      try {
+        const raw = localStorage.getItem(STORAGE_PREFIX + u.id);
+        userData[u.id] = raw ? JSON.parse(raw) : defaultData();
+      } catch {
+        userData[u.id] = defaultData();
+      }
+    });
+    const images = await idbExportAllImages();
+    return {
+      version: 2,
+      users,
+      currentUserId: localStorage.getItem(CURRENT_USER_KEY),
+      userData,
+      images,
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  async function applyCloudPayload(payload) {
+    if (!payload || !payload.userData) throw new Error('Sauvegarde cloud invalide');
+    saveUsersRegistry(payload.users || []);
+    if (payload.currentUserId) {
+      localStorage.setItem(CURRENT_USER_KEY, payload.currentUserId);
+      currentUserId = payload.currentUserId;
+    }
+    Object.entries(payload.userData).forEach(([uid, ud]) => {
+      localStorage.setItem(STORAGE_PREFIX + uid, JSON.stringify(stripExportMeta(ud)));
+    });
+    await idbApplyImages(payload.images || {});
+  }
+
   async function hydrateTradesForExport(trades) {
     return Promise.all(trades.map(async (t) => {
       const copy = { ...t };
@@ -476,6 +551,7 @@
       const clean = stripExportMeta({ ...data });
       localStorage.setItem(storageKey(), JSON.stringify(clean));
       flashSaveIndicator();
+      if (window.CloudSync?.isEnabled()) window.CloudSync.schedulePush();
     } catch (err) {
       if (err.name === 'QuotaExceededError') {
         showToast('Espace de stockage saturé — exportez une sauvegarde JSON');
@@ -853,7 +929,7 @@
     return location.protocol === 'http:' || location.protocol === 'https:';
   }
 
-  const APP_BUILD = '4';
+  const APP_BUILD = '5';
 
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator) || !isWebContext()) return;
@@ -1849,6 +1925,9 @@
   }
 
   async function bootApp() {
+    if (window.CloudSync?.isEnabled()) {
+      await window.CloudSync.pull();
+    }
     data = loadData();
     await migrateLegacyScreenshots();
     loadProfile();
@@ -1894,6 +1973,26 @@
       initEquityChart();
       registerServiceWorker();
       initPwaInstall();
+
+      if (window.CloudSync) {
+        window.CloudSync.configure({
+          buildPayload: buildCloudPayload,
+          applyPayload: applyCloudPayload,
+          onApplied: async () => {
+            data = loadData();
+            await migrateLegacyScreenshots();
+            loadProfile();
+            loadChecklist();
+            resetTradeForm(false);
+            $('#personalNotes').value = data.personalNotes || '';
+            sessionStorage.setItem(CALENDAR_WEEK_KEY, currentWeekInput());
+            $('#weeklyWeek').value = currentWeekInput();
+            updateUserDisplay();
+            renderAll();
+          }
+        });
+        window.CloudSync.initUI();
+      }
 
       migrateLegacyDataIfNeeded(loadUsersRegistry());
       const users = loadUsersRegistry();

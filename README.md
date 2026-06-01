@@ -1,7 +1,6 @@
 # Trading Journal
 
-Journal de trading professionnel — 100 % frontend, sans base de données.  
-Données stockées localement (localStorage + IndexedDB) par profil utilisateur.
+Journal de trading professionnel — **local d’abord** (localStorage + IndexedDB), avec **sync cloud optionnelle** via Vercel Postgres (gratuit).
 
 ## Fonctionnalités
 
@@ -10,6 +9,7 @@ Données stockées localement (localStorage + IndexedDB) par profil utilisateur.
 - Statistiques hebdomadaires et courbe d'équité
 - Export CSV, JSON, Word
 - PWA installable (mobile & desktop)
+- Sync cloud optionnelle (profils, trades, captures) — Vercel Postgres / Neon gratuit
 
 ---
 
@@ -59,6 +59,28 @@ git remote add origin https://github.com/VOTRE-USERNAME/journal-trading.git
 git branch -M main
 git push -u origin main
 ```
+
+---
+
+## Base de données gratuite sur Vercel
+
+Vercel ne fournit pas une base « intégrée » seule : il faut ajouter **Vercel Postgres** (propulsé par **Neon**, offre gratuite limitée).
+
+### Activer Postgres
+
+1. Dashboard Vercel → projet → **Storage** → **Create Database** → **Postgres**
+2. Lier la base au projet (variables `POSTGRES_URL` ajoutées automatiquement)
+3. Redéployer le projet (`git push`)
+4. Optionnel : exécuter `db/schema.sql` dans l’onglet SQL de Neon (la table est aussi créée au premier appel API)
+
+### Utiliser la sync dans l’app
+
+1. Ouvrir **Sync** → **Créer un compte cloud**
+2. Noter **identifiant** + **code secret** (affichés une fois)
+3. Sur un autre appareil : **Lier cet appareil** avec les mêmes identifiants
+4. Les modifications se synchronisent automatiquement (≈ 2 s après chaque sauvegarde)
+
+> Sans Postgres configuré, le journal fonctionne normalement en local. L’export JSON reste disponible.
 
 ---
 
@@ -144,6 +166,9 @@ journal-trading/
 ├── sw.js               # Service Worker (PWA)
 ├── manifest.webmanifest
 ├── icons/icon.svg
+├── api/                # API serverless (sync cloud)
+├── cloud-sync.js       # Client sync cloud
+├── db/schema.sql       # Schéma Postgres
 ├── vercel-analytics.js # Vercel Web Analytics (production HTTPS)
 ├── vercel.json         # Config Vercel
 ├── start.bat           # Serveur local Windows

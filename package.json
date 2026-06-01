@@ -1,8 +1,13 @@
 {
   "name": "journal-trading",
   "private": true,
-  "description": "Journal de trading professionnel — local, sans base de données",
+  "type": "module",
+  "description": "Journal de trading professionnel — local + sync cloud optionnelle (Vercel Postgres)",
   "scripts": {
-    "start": "npx --yes serve . -p 3000"
+    "start": "npx --yes serve . -p 3000",
+    "db:schema": "node scripts/print-schema.js"
+  },
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0"
   }
 }

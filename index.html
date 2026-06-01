@@ -564,9 +564,46 @@
             <li>Ouvrez <code>http://localhost:3000</code> dans Chrome ou Edge</li>
           </ol>
         </div>
+        <div class="card" id="cloudSyncPanel">
+          <h2>Sauvegarde cloud (Vercel Postgres)</h2>
+          <p class="sync-intro">Optionnel : stockez <strong>tous vos profils, trades et captures</strong> sur une base gratuite Vercel (Neon). Le journal fonctionne toujours hors ligne en local.</p>
+          <p class="cloud-sync-status" id="cloudSyncStatus"></p>
+
+          <div id="cloudCreateForm" class="cloud-sync-block">
+            <div class="form-group">
+              <label for="cloudCreateLabel">Nom du compte cloud</label>
+              <input type="text" id="cloudCreateLabel" placeholder="Ex. Mon journal principal" maxlength="120">
+            </div>
+            <button type="button" class="btn btn-primary" id="cloudCreateBtn">Créer un compte cloud</button>
+          </div>
+
+          <div id="cloudLinkForm" class="cloud-sync-block">
+            <p class="sync-note">Déjà un compte ? Saisissez les identifiants reçus à la création :</p>
+            <div class="form-group">
+              <label for="cloudLinkId">Identifiant cloud</label>
+              <input type="text" id="cloudLinkId" placeholder="acc_…" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="cloudLinkSecret">Code secret</label>
+              <input type="password" id="cloudLinkSecret" placeholder="Code secret" autocomplete="off">
+            </div>
+            <button type="button" class="btn btn-ghost" id="cloudLinkBtn">Lier cet appareil</button>
+          </div>
+
+          <div id="cloudSyncCredentials" class="cloud-sync-block hidden">
+            <p class="sync-note"><strong>Identifiant :</strong> <code id="cloudAccountIdDisplay"></code></p>
+            <p class="sync-note" id="cloudLastSync"></p>
+            <div class="sync-actions">
+              <button type="button" class="btn btn-primary btn-sm" id="cloudPushBtn">Envoyer vers le cloud</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="cloudPullBtn">Récupérer depuis le cloud</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="cloudCopyCredsBtn">Copier identifiants</button>
+              <button type="button" class="btn btn-danger btn-sm" id="cloudDisableBtn">Désactiver sur cet appareil</button>
+            </div>
+          </div>
+        </div>
         <div class="card">
           <h2>Synchroniser avec votre téléphone</h2>
-          <p class="sync-intro">Les données sont stockées localement par appareil. Pour les retrouver sur mobile :</p>
+          <p class="sync-intro">Sans cloud : les données restent sur chaque appareil. Alternatives :</p>
           <ol class="sync-steps">
             <li>Copiez le dossier <code>journal-trading</code> sur votre téléphone (USB, Google Drive, WhatsApp…)</li>
             <li>Ouvrez <code>index.html</code> dans Chrome/Safari mobile</li>
@@ -722,8 +759,9 @@
     </div>
   </div>
 
-  <script src="currency.js?v=4"></script>
-  <script src="export-word.js?v=4"></script>
-  <script src="app.js?v=4"></script>
+  <script src="currency.js?v=5"></script>
+  <script src="cloud-sync.js?v=5"></script>
+  <script src="export-word.js?v=5"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
