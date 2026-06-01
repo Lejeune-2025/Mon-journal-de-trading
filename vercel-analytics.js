@@ -1,10 +1,12 @@
 /**
- * Vercel Web Analytics — actif uniquement en production HTTPS (déploiement Vercel).
+ * Vercel Web Analytics — chargé uniquement si le script existe (évite les 404).
  * Activer dans : Vercel Dashboard → projet → Analytics → Enable.
  * @see https://vercel.com/docs/analytics/quickstart
  */
 (function () {
   'use strict';
+
+  const INSIGHTS_SCRIPT = '/_vercel/insights/script.js';
 
   function isProductionHost() {
     const { protocol, hostname } = location;
@@ -15,18 +17,6 @@
     return true;
   }
 
-  if (!isProductionHost()) return;
-
-  window.va = window.va || function () {
-    (window.vaq = window.vaq || []).push(arguments);
-  };
-
-  const script = document.createElement('script');
-  script.defer = true;
-  script.src = '/_vercel/insights/script.js';
-  document.head.appendChild(script);
-
-  /** Suivi des « pages » internes (SPA sans changement d’URL). */
   window.trackJournalSection = function (section) {
     if (typeof window.va !== 'function' || !section) return;
     window.va('event', {
@@ -34,4 +24,21 @@
       data: { section: String(section) }
     });
   };
+
+  if (!isProductionHost()) return;
+
+  fetch(INSIGHTS_SCRIPT, { method: 'HEAD', cache: 'no-store' })
+    .then((res) => {
+      if (!res.ok) return;
+
+      window.va = window.va || function () {
+        (window.vaq = window.vaq || []).push(arguments);
+      };
+
+      const script = document.createElement('script');
+      script.defer = true;
+      script.src = INSIGHTS_SCRIPT;
+      document.head.appendChild(script);
+    })
+    .catch(() => { /* Hors Vercel ou analytics désactivé */ });
 })();

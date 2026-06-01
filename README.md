@@ -102,6 +102,10 @@ Les stats ne s’activent **pas** en local (`localhost`) — uniquement sur l’
 5. Visiter le site en production, naviguer entre quelques sections, attendre **quelques minutes**.
 6. Revenir dans **Analytics** pour voir les données (visiteurs, vues, événements `section_view`).
 
+> **Erreur 404 `/_vercel/insights/script.js` ?**  
+> Normal si Analytics n’est pas activé sur Vercel, ou en local (`localhost`). Le site fonctionne quand même.  
+> Après activation dans le dashboard, l’erreur disparaît au prochain déploiement.
+
 #### Ce qui est mesuré
 
 | Métrique | Détail |
