@@ -115,14 +115,18 @@
 
     <main class="main">
       <header class="topbar">
-        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <button class="menu-toggle menu-toggle-logo" id="menuToggle" aria-label="Ouvrir le menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+            <polyline points="16 7 22 7 22 13"/>
+          </svg>
+          <span>Trading Journal</span>
         </button>
         <h1 class="page-title" id="pageTitle">Tableau de bord</h1>
         <div class="topbar-actions">
-          <button class="user-badge user-badge--logo" id="userBadge" type="button" title="Changer de profil">
-            <img class="site-logo" src="icons/icon.svg" alt="Journal Trading" width="18" height="18">
-            <span id="currentUserName" class="sr-only">—</span>
+          <button class="user-badge" id="userBadge" type="button" title="Changer de profil">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="currentUserName">—</span>
           </button>
           <span class="save-indicator" id="saveIndicator">Données conservées localement</span>
         </div>
