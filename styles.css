@@ -1106,6 +1106,97 @@ textarea { resize: vertical; min-height: 80px; }
 
 .trade-card-actions .btn { width: 100%; min-height: 44px; }
 
+/* Dashboard — parcours journal */
+.journal-workflow-card { margin-bottom: 1.25rem; }
+.workflow-lead {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0 0 1.1rem;
+}
+.workflow-footnote {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 1rem 0 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+}
+.journal-workflow-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.workflow-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem 1rem;
+  align-items: start;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+.workflow-step--main {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.06);
+}
+.workflow-step--optional { opacity: 0.95; }
+.workflow-step--done { border-color: rgba(34, 197, 94, 0.25); }
+.workflow-step-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.workflow-step-badge--main {
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--primary);
+}
+.workflow-step-body strong {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+}
+.workflow-step-body p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 0.5rem;
+}
+.workflow-step-meta {
+  font-size: 0.78rem !important;
+  color: var(--primary) !important;
+  margin-bottom: 0.65rem !important;
+}
+.workflow-step-body .btn { margin-top: 0.15rem; }
+.section-intro {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0 0 1rem;
+  max-width: 52rem;
+}
+.btn-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: inherit;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.btn-link:hover { opacity: 0.85; }
+
 /* Sync section */
 .sync-intro, .sync-note { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
 .sync-steps { margin: 0 0 1.25rem 1.25rem; font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; }
@@ -1226,6 +1317,11 @@ textarea { resize: vertical; min-height: 80px; }
     max-width: 100%;
     overflow-x: hidden;
   }
+  .workflow-step {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .workflow-lead { font-size: 0.82rem; }
   .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.55rem;

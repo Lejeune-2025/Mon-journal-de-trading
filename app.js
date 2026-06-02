@@ -1332,6 +1332,29 @@
   function saveChecklist() {
     data.checklist = [...$$('#preTradeChecklist input')].map((cb) => cb.checked);
     debouncedSave();
+    renderJournalWorkflow();
+  }
+
+  function getChecklistProgress() {
+    const items = data.checklist || [];
+    const done = items.filter(Boolean).length;
+    const total = items.length || 8;
+    return { done, total };
+  }
+
+  function renderJournalWorkflow() {
+    const meta = $('#workflowChecklistMeta');
+    if (!meta) return;
+    const { done, total } = getChecklistProgress();
+    if (done === 0) {
+      meta.textContent = 'Checklist : pas encore commencée (facultatif).';
+    } else if (done === total) {
+      meta.textContent = `Checklist : ${done}/${total} — prête. Passez à « Nouveau trade ».`;
+    } else {
+      meta.textContent = `Checklist : ${done}/${total} points cochés.`;
+    }
+    const checklistStep = document.querySelector('[data-workflow-step="checklist"]');
+    checklistStep?.classList.toggle('workflow-step--done', done === total && total > 0);
   }
 
   function setScreenshotPreview(target, src) {
@@ -1725,6 +1748,7 @@
   }
 
   function renderAll() {
+    renderJournalWorkflow();
     renderKPIs();
     renderEquityChart();
     renderRecentTrades();
@@ -1885,6 +1909,7 @@
       data.checklist = [false, false, false, false, false, false, false, false];
       loadChecklist();
       saveData();
+      renderJournalWorkflow();
     });
 
     document.addEventListener('click', (e) => {

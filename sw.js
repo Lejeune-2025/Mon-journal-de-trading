@@ -1,5 +1,5 @@
 /** Incrémenter à chaque déploiement important (CSS/JS) pour vider les caches iOS/PWA */
-const BUILD = '6';
+const BUILD = '7';
 const CACHE = `trading-journal-${BUILD}`;
 
 const OFFLINE_URLS = ['./icons/icon.svg', './manifest.webmanifest'];

@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=7">
   <script src="vercel-analytics.js?v=4"></script>
   <style>
     body:not(.app-ready) .app { opacity: 0; visibility: hidden; }
@@ -134,6 +134,42 @@
       <!-- DASHBOARD -->
       <section class="section active" id="section-dashboard">
         <p class="period-label" id="dashboardWeekLabel">Semaine en cours</p>
+
+        <div class="card journal-workflow-card" id="journalWorkflowCard">
+          <div class="card-header">
+            <h2>Comment enregistrer un trade ?</h2>
+          </div>
+          <p class="workflow-lead">La <strong>checklist</strong> se fait <em>avant</em> d’ouvrir une position. Le <strong>nouveau trade</strong> se remplit <em>après</em> (ou pendant) le trade — c’est l’étape principale du journal. Les <strong>notes personnelles</strong> sont libres et ne remplacent pas le formulaire trade.</p>
+          <ol class="journal-workflow-steps" id="journalWorkflowSteps" aria-label="Parcours d’enregistrement">
+            <li class="workflow-step" data-workflow-step="checklist">
+              <span class="workflow-step-badge">1 · Avant</span>
+              <div class="workflow-step-body">
+                <strong>Checklist pré-trade</strong>
+                <p>Vérifiez votre discipline <strong>avant</strong> de prendre une position. Ce n’est pas obligatoire pour enregistrer un trade.</p>
+                <p class="workflow-step-meta" id="workflowChecklistMeta">—</p>
+                <button type="button" class="btn btn-ghost btn-sm" data-goto="checklist">Ouvrir la checklist</button>
+              </div>
+            </li>
+            <li class="workflow-step workflow-step--main" data-workflow-step="trade">
+              <span class="workflow-step-badge workflow-step-badge--main">2 · Principal</span>
+              <div class="workflow-step-body">
+                <strong>Nouveau trade</strong>
+                <p>Enregistrez le trade ici : résultat, plan, émotions, captures. Faites cette étape <strong>après</strong> la checklist (si vous l’utilisez).</p>
+                <button type="button" class="btn btn-primary btn-sm" data-goto="new-trade">+ Nouveau trade</button>
+              </div>
+            </li>
+            <li class="workflow-step workflow-step--optional" data-workflow-step="notes">
+              <span class="workflow-step-badge">3 · Optionnel</span>
+              <div class="workflow-step-body">
+                <strong>Notes personnelles</strong>
+                <p>Réflexions générales sur votre trading (pas le détail d’un trade précis — utilisez le formulaire ci-dessus pour ça).</p>
+                <button type="button" class="btn btn-ghost btn-sm" data-goto="notes">Ouvrir les notes</button>
+              </div>
+            </li>
+          </ol>
+          <p class="workflow-footnote">En fin de semaine : <button type="button" class="btn-link" data-goto="weekly">Analyse hebdomadaire</button> (synthèse, pas à chaque trade).</p>
+        </div>
+
         <div class="kpi-grid" id="kpiGrid"></div>
         <div class="card">
           <div class="card-header">
@@ -166,7 +202,7 @@
             </table>
           </div>
           <div class="trade-cards mobile-only" id="recentTradesCards"></div>
-          <p class="empty-state hidden" id="emptyTrades">Aucun trade enregistré. Commencez par ajouter votre premier trade.</p>
+          <p class="empty-state hidden" id="emptyTrades">Aucun trade enregistré. Utilisez l’étape « Nouveau trade » dans le guide ci-dessus.</p>
         </div>
       </section>
 
@@ -224,6 +260,7 @@
 
       <!-- NOUVEAU TRADE -->
       <section class="section" id="section-new-trade">
+        <p class="section-intro">Étape principale du journal : complétez ce formulaire <strong>après</strong> votre checklist pré-trade (menu Checklist), une fois le trade pris ou clôturé.</p>
         <form id="tradeForm">
           <input type="hidden" id="tradeId">
 
@@ -660,6 +697,7 @@
       <section class="section" id="section-checklist">
         <div class="card">
           <h2>Checklist avant de prendre un trade</h2>
+          <p class="section-intro">À cocher <strong>avant</strong> d’ouvrir une position. Ensuite, enregistrez le trade dans <button type="button" class="btn-link" data-goto="new-trade">Nouveau trade</button> — pas l’inverse.</p>
           <ul class="checklist" id="preTradeChecklist">
             <li><label><input type="checkbox"> Le trade respecte ma stratégie.</label></li>
             <li><label><input type="checkbox"> Le risque est défini avant l'entrée.</label></li>
@@ -678,7 +716,8 @@
       <section class="section" id="section-notes">
         <div class="card">
           <h2>Notes personnelles</h2>
-          <textarea id="personalNotes" rows="16" placeholder="Vos réflexions, observations, rappels..."></textarea>
+          <p class="section-intro">Bloc-notes libre (hors trade). Pour documenter <strong>un trade précis</strong>, utilisez <button type="button" class="btn-link" data-goto="new-trade">Nouveau trade</button>.</p>
+          <textarea id="personalNotes" rows="16" placeholder="Réflexions générales, objectifs du mois, rappels de discipline…"></textarea>
         </div>
       </section>
     </main>
@@ -740,9 +779,9 @@
     </div>
   </div>
 
-  <script src="currency.js?v=6"></script>
-  <script src="cloud-sync.js?v=6"></script>
-  <script src="export-word.js?v=6"></script>
-  <script src="app.js?v=6"></script>
+  <script src="currency.js?v=7"></script>
+  <script src="cloud-sync.js?v=7"></script>
+  <script src="export-word.js?v=7"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>
