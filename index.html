@@ -7,7 +7,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0f172a">
-  <title>Journal de Trading Professionnel</title>
+  <title>Mon Trading Journal</title>
+  <script src="i18n.js?v=21"></script>
   <script>
     if (location.protocol === 'http:' || location.protocol === 'https:') {
       const m = document.createElement('link');
@@ -21,12 +22,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
-  <script src="vercel-analytics.js?v=4"></script>
+  <link rel="stylesheet" href="styles.css?v=21">
   <style>
     body:not(.app-ready) .app { opacity: 0; visibility: hidden; }
     .splash-screen {
-      position: fixed; inset: 0; z-index: 9999;
+      position: fixed; inset: 0; z-index: 10030;
       background: #020617;
       display: flex; align-items: center; justify-content: center;
     }
@@ -35,14 +35,20 @@
 <body>
   <div id="splashScreen" class="splash-screen" role="status" aria-live="polite" aria-label="Chargement en cours">
     <div class="splash-content">
-      <div class="splash-logo" aria-hidden="true">
-        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-          <polyline points="16 7 22 7 22 13"/>
-        </svg>
+      <p class="splash-title splash-brand-only" data-i18n="app.name">Mon Trading Journal</p>
+      <div class="splash-candles-track" aria-hidden="true">
+        <div class="splash-candles">
+          <div class="splash-candle splash-candle--up" style="--d:0"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          <div class="splash-candle splash-candle--down" style="--d:1"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          <div class="splash-candle splash-candle--up" style="--d:2"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          <div class="splash-candle splash-candle--down" style="--d:3"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          <div class="splash-candle splash-candle--up" style="--d:4"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          <div class="splash-candle splash-candle--down" style="--d:5"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          <div class="splash-candle splash-candle--up" style="--d:6"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          <div class="splash-candle splash-candle--down" style="--d:7"><span class="candle-wick"></span><span class="candle-body"></span></div>
+        </div>
       </div>
-      <p class="splash-title">Trading Journal</p>
-      <div class="splash-loader" aria-hidden="true"><div class="splash-loader-bar"></div></div>
+      <p class="splash-subtitle" data-i18n="splash.loading">Chargement du journal…</p>
     </div>
   </div>
   <div class="app">
@@ -53,117 +59,117 @@
             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
             <polyline points="16 7 22 7 22 13"/>
           </svg>
-          <span>Trading Journal</span>
+          <span data-i18n="app.name">Mon Trading Journal</span>
         </div>
-        <button class="sidebar-close" id="sidebarClose" aria-label="Fermer le menu">
+        <button class="sidebar-close" id="sidebarClose" data-i18n-aria="nav.closeMenu" aria-label="Fermer le menu">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
       </div>
       <nav class="nav">
         <button class="nav-item active" data-section="dashboard">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          Tableau de bord
+          <span data-i18n="nav.dashboard">Tableau de bord</span>
         </button>
         <button class="nav-item" data-section="profile">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Profil trader
+          <span data-i18n="nav.profile">Profil trader</span>
         </button>
         <button class="nav-item" data-section="new-trade">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
-          Nouveau trade
+          <span data-i18n="nav.newTrade">Nouveau trade</span>
         </button>
         <button class="nav-item" data-section="trades">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          Historique
+          <span data-i18n="nav.trades">Historique</span>
         </button>
         <button class="nav-item" data-section="weekly">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Analyse hebdo
+          <span data-i18n="nav.weekly">Analyse hebdo</span>
         </button>
         <button class="nav-item" data-section="checklist">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          Checklist
+          <span data-i18n="nav.checklist">Checklist</span>
         </button>
         <button class="nav-item" data-section="notes">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Notes
+          <span data-i18n="nav.notes">Notes</span>
         </button>
         <button class="nav-item" data-section="sync">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9"/><path d="M21 3v6h-6"/><path d="M3 12a9 9 0 0 1 9-9"/><path d="M3 21v-6h6"/></svg>
-          Sync mobile
+          <span data-i18n="nav.sync">Sync mobile</span>
         </button>
       </nav>
       <div class="sidebar-footer">
         <p class="persist-note">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Données sauvegardées automatiquement sur cet ordinateur
+          <span data-i18n="persist.note">Données sauvegardées automatiquement sur cet ordinateur</span>
         </p>
         <button class="btn btn-primary btn-sm" id="exportWordBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          Exporter Word (.docx)
+          <span data-i18n="btn.exportWord">Exporter Word (.docx)</span>
         </button>
         <button class="btn btn-ghost btn-sm" id="exportBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Exporter CSV
+          <span data-i18n="btn.exportCsv">Exporter CSV</span>
         </button>
         <button class="btn btn-ghost btn-sm" id="printBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          Imprimer
+          <span data-i18n="btn.print">Imprimer</span>
         </button>
       </div>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <button class="menu-toggle menu-toggle-logo" id="menuToggle" aria-label="Ouvrir le menu">
+        <button class="menu-toggle menu-toggle-logo" id="menuToggle" data-i18n-aria="nav.openMenu" aria-label="Ouvrir le menu">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
             <polyline points="16 7 22 7 22 13"/>
           </svg>
         </button>
-        <h1 class="page-title" id="pageTitle">Tableau de bord</h1>
+        <h1 class="page-title" id="pageTitle" data-i18n="nav.dashboard">Tableau de bord</h1>
         <div class="topbar-actions">
-          <button class="user-badge" id="userBadge" type="button" title="Changer de profil">
+          <button class="user-badge" id="userBadge" type="button" data-i18n-title="nav.changeProfile" title="Changer de profil">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             <span id="currentUserName">—</span>
           </button>
-          <span class="save-indicator" id="saveIndicator">Données conservées localement</span>
+          <span class="save-indicator" id="saveIndicator" data-i18n="saveIndicator.local">Données conservées localement</span>
         </div>
       </header>
 
       <!-- DASHBOARD -->
       <section class="section active" id="section-dashboard">
-        <p class="period-label" id="dashboardWeekLabel">Semaine en cours</p>
+        <p class="period-label" id="dashboardWeekLabel" data-i18n="period.currentWeek">Semaine en cours</p>
 
         <div class="card journal-workflow-card" id="journalWorkflowCard">
           <div class="card-header">
-            <h2>Comment enregistrer un trade ?</h2>
+            <h2 data-i18n="workflow.title">Comment enregistrer un trade ?</h2>
           </div>
-          <p class="workflow-lead">La <strong>checklist</strong> se fait <em>avant</em> d’ouvrir une position. Le <strong>nouveau trade</strong> se remplit <em>après</em> (ou pendant) le trade — c’est l’étape principale du journal. Les <strong>notes personnelles</strong> sont libres et ne remplacent pas le formulaire trade.</p>
+          <p class="workflow-lead" data-i18n="workflow.lead">La checklist se fait avant d’ouvrir une position. Le nouveau trade se remplit après (ou pendant) le trade — c’est l’étape principale du journal. Les notes personnelles sont libres et ne remplacent pas le formulaire trade.</p>
           <ol class="journal-workflow-steps" id="journalWorkflowSteps" aria-label="Parcours d’enregistrement">
             <li class="workflow-step" data-workflow-step="checklist">
               <span class="workflow-step-badge">1 · Avant</span>
               <div class="workflow-step-body">
-                <strong>Checklist pré-trade</strong>
-                <p>Vérifiez votre discipline <strong>avant</strong> de prendre une position. Ce n’est pas obligatoire pour enregistrer un trade.</p>
+                <strong data-i18n="workflow.step1.title">Checklist pré-trade</strong>
+                <p data-i18n="workflow.step1.desc">Vérifiez votre discipline avant de prendre une position. Ce n’est pas obligatoire pour enregistrer un trade.</p>
                 <p class="workflow-step-meta" id="workflowChecklistMeta">—</p>
-                <button type="button" class="btn btn-ghost btn-sm" data-goto="checklist">Ouvrir la checklist</button>
+                <button type="button" class="btn btn-ghost btn-sm" data-goto="checklist" data-i18n="workflow.step1.open">Ouvrir la checklist</button>
               </div>
             </li>
             <li class="workflow-step workflow-step--main" data-workflow-step="trade">
               <span class="workflow-step-badge workflow-step-badge--main">2 · Principal</span>
               <div class="workflow-step-body">
-                <strong>Nouveau trade</strong>
-                <p>Enregistrez le trade ici : résultat, plan, émotions, captures. Faites cette étape <strong>après</strong> la checklist (si vous l’utilisez).</p>
-                <button type="button" class="btn btn-primary btn-sm" data-goto="new-trade">+ Nouveau trade</button>
+                <strong data-i18n="workflow.step2.title">Nouveau trade</strong>
+                <p><span data-i18n="workflow.step2.desc">Enregistrez le trade ici : résultat, plan, émotions, captures. Faites cette étape après la checklist (si vous l’utilisez).</span><span class="workflow-mobile-hint" data-i18n="workflow.step2.hint"> Utilisez le bouton + en bas de l’écran.</span></p>
+                <button type="button" class="btn btn-primary btn-sm desktop-only" data-goto="new-trade" data-i18n="workflow.step2.btn">+ Nouveau trade</button>
               </div>
             </li>
             <li class="workflow-step workflow-step--optional" data-workflow-step="notes">
               <span class="workflow-step-badge">3 · Optionnel</span>
               <div class="workflow-step-body">
-                <strong>Notes personnelles</strong>
-                <p>Réflexions générales sur votre trading (pas le détail d’un trade précis — utilisez le formulaire ci-dessus pour ça).</p>
-                <button type="button" class="btn btn-ghost btn-sm" data-goto="notes">Ouvrir les notes</button>
+                <strong data-i18n="workflow.step3.title">Notes personnelles</strong>
+                <p data-i18n="workflow.step3.desc">Réflexions générales sur votre trading (pas le détail d’un trade précis — utilisez le formulaire ci-dessus pour ça).</p>
+                <button type="button" class="btn btn-ghost btn-sm" data-goto="notes" data-i18n="workflow.step3.open">Ouvrir les notes</button>
               </div>
             </li>
           </ol>
@@ -173,18 +179,18 @@
         <div class="kpi-grid" id="kpiGrid"></div>
         <div class="card">
           <div class="card-header">
-            <h2>Courbe d'équité</h2>
+            <h2 data-i18n="chart.equity">Courbe d'équité</h2>
             <div class="chart-scope-toggle">
-              <button type="button" class="btn btn-ghost btn-sm active" data-chart-scope="week">Semaine</button>
-              <button type="button" class="btn btn-ghost btn-sm" data-chart-scope="all">Tout</button>
+              <button type="button" class="btn btn-ghost btn-sm active" data-chart-scope="week" data-i18n="chart.week">Semaine</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-chart-scope="all" data-i18n="chart.all">Tout</button>
             </div>
           </div>
           <div id="equityChartWrap" class="equity-chart-wrap"></div>
         </div>
         <div class="card">
           <div class="card-header">
-            <h2>Trades de la semaine</h2>
-            <button class="btn btn-primary btn-sm" data-goto="new-trade">+ Nouveau trade</button>
+            <h2 data-i18n="trades.weekTitle">Trades de la semaine</h2>
+            <button class="btn btn-primary btn-sm" data-goto="new-trade" data-i18n="workflow.step2.btn">+ Nouveau trade</button>
           </div>
           <div class="table-wrap desktop-only">
             <table class="data-table" id="recentTradesTable">
@@ -202,7 +208,7 @@
             </table>
           </div>
           <div class="trade-cards mobile-only" id="recentTradesCards"></div>
-          <p class="empty-state hidden" id="emptyTrades">Aucun trade enregistré. Utilisez l’étape « Nouveau trade » dans le guide ci-dessus.</p>
+          <p class="empty-state hidden" id="emptyTrades" data-i18n="trades.empty">Aucun trade enregistré. Utilisez l’étape « Nouveau trade » dans le guide ci-dessus.</p>
         </div>
       </section>
 
@@ -600,6 +606,7 @@
           <p class="sync-intro">Vos <strong>profils, trades et captures</strong> sont synchronisés entre PC et téléphone via le cloud. Sans compte, l’enregistrement est bloqué sur le site.</p>
           <p class="sync-note"><strong>2e appareil :</strong> « Lier cet appareil » avec les identifiants du 1er — ne recréez pas un compte.</p>
           <p class="cloud-sync-status" id="cloudSyncStatus"></p>
+          <p class="sync-note" id="cookieConsentStatus" hidden></p>
 
           <div id="cloudCreateForm" class="cloud-sync-block">
             <p class="sync-note"><strong>1er appareil</strong> — créez le compte une seule fois :</p>
@@ -728,22 +735,22 @@
   <nav class="bottom-nav mobile-only" id="bottomNav" aria-label="Navigation mobile">
     <button class="bottom-nav-item" data-section="dashboard" aria-label="Tableau de bord">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      <span>Accueil</span>
+      <span data-i18n="bottom.home">Accueil</span>
     </button>
     <button class="bottom-nav-item" data-section="trades" aria-label="Historique">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      <span>Trades</span>
+      <span data-i18n="bottom.trades">Trades</span>
     </button>
     <button class="bottom-nav-item bottom-nav-fab" data-section="new-trade" aria-label="Nouveau trade">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
     </button>
     <button class="bottom-nav-item" data-section="sync" aria-label="Synchronisation">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 1-9 9"/><path d="M21 3v6h-6"/><path d="M3 12a9 9 0 0 1 9-9"/><path d="M3 21v-6h6"/></svg>
-      <span>Sync</span>
+      <span data-i18n="bottom.sync">Sync</span>
     </button>
     <button class="bottom-nav-item" id="bottomMenuBtn" aria-label="Menu">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      <span>Menu</span>
+      <span data-i18n="bottom.menu">Menu</span>
     </button>
   </nav>
 
@@ -754,34 +761,117 @@
       <button type="button" class="modal-close" id="userModalClose" aria-label="Fermer" hidden>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
-      <h2 id="userModalTitle">Choisir un profil</h2>
-      <p class="modal-intro">Chaque profil possède ses propres trades et statistiques. Aucune base de données — tout est stocké sur cet appareil.</p>
+      <h2 id="userModalTitle" data-i18n="profile.modalTitle">Choisir un profil</h2>
+      <p class="modal-intro" data-i18n="profile.modalIntro">Chaque profil possède ses propres trades et statistiques.</p>
       <div class="user-list" id="userList"></div>
       <form id="createUserForm" class="create-user-form">
         <div class="form-group">
-          <label for="newUserName">Créer un nouveau profil</label>
-          <input type="text" id="newUserName" placeholder="Votre prénom ou pseudo" required maxlength="40">
+          <label for="newUserName" data-i18n="profile.createLabel">Créer un nouveau profil</label>
+          <input type="text" id="newUserName" data-i18n-placeholder="profile.createPlaceholder" placeholder="Votre prénom ou pseudo" required maxlength="40">
         </div>
-        <button type="submit" class="btn btn-primary">Créer et continuer</button>
+        <button type="submit" class="btn btn-primary" data-i18n="profile.createBtn">Créer et continuer</button>
       </form>
-      <button type="button" class="btn btn-ghost modal-cancel" id="userModalCancel" hidden>Annuler</button>
+      <button type="button" class="btn btn-ghost modal-cancel" id="userModalCancel" hidden data-i18n="profile.cancel">Annuler</button>
     </div>
   </div>
 
   <div class="modal-overlay" id="confirmModal" role="alertdialog" aria-modal="true" aria-labelledby="confirmModalTitle">
     <div class="modal modal-sm">
-      <h2 id="confirmModalTitle">Confirmation</h2>
+      <h2 id="confirmModalTitle" data-i18n="confirm.title">Confirmation</h2>
       <p class="modal-intro" id="confirmModalMessage"></p>
       <div class="confirm-actions">
-        <button type="button" class="btn btn-ghost" id="confirmModalCancel">Annuler</button>
-        <button type="button" class="btn btn-primary" id="confirmModalOk">Confirmer</button>
+        <button type="button" class="btn btn-ghost" id="confirmModalCancel" data-i18n="confirm.cancel">Annuler</button>
+        <button type="button" class="btn btn-primary" id="confirmModalOk" data-i18n="confirm.ok">Confirmer</button>
       </div>
     </div>
   </div>
 
-  <script src="currency.js?v=7"></script>
-  <script src="cloud-sync.js?v=7"></script>
-  <script src="export-word.js?v=7"></script>
-  <script src="app.js?v=7"></script>
+  <div class="consent-backdrop" id="termsBackdrop" hidden aria-hidden="true"></div>
+  <div class="legal-overlay legal-overlay--terms" id="termsOverlay" role="dialog" aria-modal="true" aria-labelledby="termsModalTitle" hidden>
+    <div class="terms-candles-band" aria-hidden="true">
+      <div class="terms-candles-track">
+        <div class="terms-candles-run">
+          <div class="terms-candles-set splash-candles">
+            <div class="splash-candle splash-candle--up" style="--d:0"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--down" style="--d:1"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--up" style="--d:2"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--down" style="--d:3"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--up" style="--d:4"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--down" style="--d:5"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--up" style="--d:6"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--down" style="--d:7"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          </div>
+          <div class="terms-candles-set splash-candles" aria-hidden="true">
+            <div class="splash-candle splash-candle--up" style="--d:0"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--down" style="--d:1"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--up" style="--d:2"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--down" style="--d:3"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--up" style="--d:4"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--down" style="--d:5"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--up" style="--d:6"><span class="candle-wick"></span><span class="candle-body"></span></div>
+            <div class="splash-candle splash-candle--down" style="--d:7"><span class="candle-wick"></span><span class="candle-body"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legal-modal">
+      <div class="legal-modal-header">
+        <div class="legal-modal-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="9" y1="13" x2="15" y2="13"/>
+            <line x1="9" y1="17" x2="13" y2="17"/>
+          </svg>
+        </div>
+        <h2 id="termsModalTitle" data-i18n="terms.title">Conditions d'utilisation</h2>
+      </div>
+      <div class="legal-scroll" tabindex="0">
+        <p data-i18n-html="terms.welcome">Bienvenue sur <strong>Mon Trading Journal</strong>. En utilisant ce site, vous acceptez les points suivants :</p>
+        <ul>
+          <li><strong>Outil personnel</strong> — Ce journal sert à documenter vos trades ; il ne constitue pas un conseil en investissement.</li>
+          <li><strong>Vos données</strong> — Les trades sont stockés sur votre appareil ; la synchronisation cloud (si activée) utilise nos serveurs sécurisés.</li>
+          <li><strong>Votre responsabilité</strong> — Vous êtes seul responsable de vos décisions de trading et de la confidentialité de vos identifiants cloud.</li>
+          <li><strong>Disponibilité</strong> — Le service est fourni « en l'état », sans garantie de disponibilité continue.</li>
+          <li><strong>Évolutions</strong> — Les fonctionnalités peuvent évoluer ; l'usage implique l'acceptation de la version en vigueur.</li>
+        </ul>
+      </div>
+      <label class="legal-checkbox">
+        <input type="checkbox" id="termsAcceptCheck">
+        <span data-i18n="terms.check">J'ai lu et j'accepte les conditions d'utilisation</span>
+      </label>
+      <button type="button" class="btn btn-primary legal-btn-full" id="termsAcceptBtn" disabled data-i18n="terms.continue">Continuer</button>
+    </div>
+  </div>
+
+  <div class="consent-backdrop" id="cookieBackdrop" hidden aria-hidden="true"></div>
+  <div class="cookie-banner" id="cookieBanner" role="dialog" aria-modal="true" aria-labelledby="cookieBannerTitle" hidden>
+    <div class="cookie-banner-panel">
+      <div class="cookie-banner-icon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="8.5" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="10" cy="14.5" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="14.5" cy="15" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <div class="cookie-banner-content">
+        <p class="cookie-banner-title" id="cookieBannerTitle" data-i18n="cookies.title">Ce site utilise des cookies</p>
+        <p class="cookie-banner-text" data-i18n="cookies.text">Nous utilisons des cookies pour le bon fonctionnement du site. Les cookies d’analyse ne sont activés que si vous acceptez.</p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button type="button" class="btn btn-ghost cookie-btn-refuse" id="cookieRefuse" data-i18n="cookies.refuse">Refuser</button>
+        <button type="button" class="btn btn-primary cookie-btn-accept" id="cookieAccept" data-i18n="cookies.accept">Accepter</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="vercel-analytics.js?v=21"></script>
+  <script src="legal-consent.js?v=21"></script>
+  <script src="currency.js?v=21"></script>
+  <script src="cloud-sync.js?v=21"></script>
+  <script src="export-word.js?v=21"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>

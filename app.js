@@ -11,6 +11,7 @@
   const IDB_STORE = 'screenshots';
   const SPLASH_MIN_MS = 900;
   const splashStart = performance.now();
+  const t = (key, vars) => (window.I18n ? window.I18n.t(key, vars) : key);
 
   const DAY_NAMES = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
@@ -530,16 +531,18 @@
     if (changed) saveData();
   }
 
-  const sectionTitles = {
-    dashboard: 'Tableau de bord',
-    profile: 'Profil trader',
-    'new-trade': 'Nouveau trade',
-    trades: 'Historique des trades',
-    weekly: 'Analyse hebdomadaire',
-    checklist: 'Checklist pré-trade',
-    notes: 'Notes personnelles',
-    sync: 'Sync mobile'
-  };
+  function getSectionTitles() {
+    return {
+      dashboard: t('nav.dashboard'),
+      profile: t('nav.profile'),
+      'new-trade': t('nav.newTrade'),
+      trades: t('nav.trades'),
+      weekly: t('nav.weekly'),
+      checklist: t('nav.checklist'),
+      notes: t('nav.notes'),
+      sync: t('nav.sync')
+    };
+  }
 
   function loadData() {
     if (!currentUserId) return defaultData();
@@ -582,9 +585,9 @@
 
   function flashSaveIndicator() {
     const el = $('#saveIndicator');
-    el.textContent = 'Sauvegardé automatiquement';
+    el.textContent = t('saveIndicator.saved');
     el.style.color = 'var(--primary)';
-    setTimeout(() => { el.textContent = 'Données conservées localement'; el.style.color = ''; }, 2000);
+    setTimeout(() => { el.textContent = t('saveIndicator.local'); el.style.color = ''; }, 2000);
   }
 
   function showToast(msg) {
@@ -1347,11 +1350,11 @@
     if (!meta) return;
     const { done, total } = getChecklistProgress();
     if (done === 0) {
-      meta.textContent = 'Checklist : pas encore commencée (facultatif).';
+      meta.textContent = t('workflow.meta.empty');
     } else if (done === total) {
-      meta.textContent = `Checklist : ${done}/${total} — prête. Passez à « Nouveau trade ».`;
+      meta.textContent = t('workflow.meta.ready', { done, total });
     } else {
-      meta.textContent = `Checklist : ${done}/${total} points cochés.`;
+      meta.textContent = t('workflow.meta.partial', { done, total });
     }
     const checklistStep = document.querySelector('[data-workflow-step="checklist"]');
     checklistStep?.classList.toggle('workflow-step--done', done === total && total > 0);
@@ -1726,7 +1729,7 @@
     $$('.nav-item').forEach((n) => n.classList.toggle('active', n.dataset.section === section));
     $$('.bottom-nav-item[data-section]').forEach((n) => n.classList.toggle('active', n.dataset.section === section));
     $$('.section').forEach((s) => s.classList.toggle('active', s.id === `section-${section}`));
-    $('#pageTitle').textContent = sectionTitles[section] || section;
+    $('#pageTitle').textContent = getSectionTitles()[section] || section;
     closeSidebar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (typeof window.trackJournalSection === 'function') window.trackJournalSection(section);
@@ -2031,6 +2034,9 @@
 
   async function init() {
     try {
+      if (window.LegalConsent?.whenReady) {
+        await window.LegalConsent.whenReady();
+      }
       initUserModal();
       initNavigation();
       initWeekAutoRefresh();

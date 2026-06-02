@@ -1,12 +1,11 @@
 /**
- * Vercel Web Analytics — chargé uniquement si le script existe (évite les 404).
- * Activer dans : Vercel Dashboard → projet → Analytics → Enable.
- * @see https://vercel.com/docs/analytics/quickstart
+ * Vercel Web Analytics — chargé uniquement après consentement « Tout accepter ».
  */
 (function () {
   'use strict';
 
   const INSIGHTS_SCRIPT = '/_vercel/insights/script.js';
+  let loaded = false;
 
   function isProductionHost() {
     const { protocol, hostname } = location;
@@ -25,20 +24,33 @@
     });
   };
 
-  if (!isProductionHost()) return;
+  function load() {
+    if (loaded || !isProductionHost()) return;
+    loaded = true;
 
-  fetch(INSIGHTS_SCRIPT, { method: 'HEAD', cache: 'no-store' })
-    .then((res) => {
-      if (!res.ok) return;
+    fetch(INSIGHTS_SCRIPT, { method: 'HEAD', cache: 'no-store' })
+      .then((res) => {
+        if (!res.ok) return;
 
-      window.va = window.va || function () {
-        (window.vaq = window.vaq || []).push(arguments);
-      };
+        window.va = window.va || function () {
+          (window.vaq = window.vaq || []).push(arguments);
+        };
 
-      const script = document.createElement('script');
-      script.defer = true;
-      script.src = INSIGHTS_SCRIPT;
-      document.head.appendChild(script);
-    })
-    .catch(() => { /* Hors Vercel ou analytics désactivé */ });
+        const script = document.createElement('script');
+        script.defer = true;
+        script.src = INSIGHTS_SCRIPT;
+        script.onload = () => {
+          if (typeof window.va === 'function') {
+            window.va('event', {
+              name: 'cookie_consent',
+              data: { choice: 'accepted' }
+            });
+          }
+        };
+        document.head.appendChild(script);
+      })
+      .catch(() => { /* Hors Vercel ou analytics désactivé */ });
+  }
+
+  window.JournalAnalytics = { load };
 })();
