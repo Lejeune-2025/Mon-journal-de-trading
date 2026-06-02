@@ -950,7 +950,7 @@
     return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   }
 
-  const APP_BUILD = '5';
+  const APP_BUILD = '6';
 
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator) || !isWebContext()) return;
@@ -1708,20 +1708,37 @@
     reader.readAsText(file);
   }
 
-  function exportCSV() {
-    const headers = ['Date', 'Actif', 'Sens', 'Entrée', 'Stop Loss', 'Objectif', 'Risque $', 'Résultat $', 'R Multiple', 'Plan respecté', 'Leçon'];
-    const rows = data.trades.map((t) => [
-      formatDate(t.date), t.asset, t.direction, t.entryPrice, t.stopLoss, t.takeProfit,
-      t.riskAmount, t.resultAmount, calcActualRR(t.resultAmount, t.riskAmount),
-      t.planRespected, (t.lessonLearned || '').replace(/"/g, '""')
-    ]);
-    const csv = [headers, ...rows].map((r) => r.map((c) => `"${c ?? ''}"`).join(';')).join('\n');
-    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `journal-trading-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    showToast('Export CSV téléchargé');
+  async function exportPdf() {
+    if (!window.TradingJournalPdfExport) {
+      showToast(t('toast.pdfModule'));
+      return;
+    }
+    const btn = $('#exportPdfBtn');
+    const btnOriginal = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
+    }
+    showToast(t('toast.pdfGenerating'));
+    try {
+      const trades = await hydrateTradesForExport(data.trades);
+      const user = getCurrentUser();
+      await window.TradingJournalPdfExport.exportAll({
+        ...data,
+        trades,
+        userName: user?.name || '',
+      });
+      showToast(t('toast.pdfDone'));
+    } catch (err) {
+      console.error(err);
+      showToast(t('toast.pdfError'));
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.removeAttribute('aria-busy');
+        btn.innerHTML = btnOriginal;
+      }
+    }
   }
 
   function navigateTo(section) {
@@ -1941,7 +1958,7 @@
     });
 
     $('#exportWordBtn').addEventListener('click', () => exportWord());
-    $('#exportBtn').addEventListener('click', exportCSV);
+    $('#exportPdfBtn').addEventListener('click', () => exportPdf());
     const exportBackupBtn = $('#exportBackupBtn');
     const importBackupBtn = $('#importBackupBtn');
     const importBackupInput = $('#importBackupInput');

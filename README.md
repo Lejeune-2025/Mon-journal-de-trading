@@ -7,7 +7,7 @@ Journal de trading professionnel — **local d’abord** (localStorage + Indexed
 - Multi-profils utilisateurs isolés
 - Enregistrement des trades (plan, émotions, captures)
 - Statistiques hebdomadaires et courbe d'équité
-- Export CSV, JSON, Word
+- Export PDF, JSON, Word
 - PWA installable (mobile & desktop)
 - Sync cloud obligatoire en HTTPS (profils, trades, captures) — Vercel Postgres / Neon gratuit
 
