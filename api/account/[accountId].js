@@ -14,8 +14,11 @@ async function getAccount(accountId) {
 }
 
 export default async function handler(req, res) {
-  const accountId = req.query?.accountId;
+  const accountId = String(req.query?.accountId || '').trim().toLowerCase();
   if (!accountId) return sendJson(res, 400, { error: 'accountId requis' });
+  if (!/^acc_[a-f0-9]{24}$/.test(accountId)) {
+    return sendJson(res, 400, { error: 'Format d’identifiant invalide' });
+  }
 
   if (!isDbConfigured()) {
     return sendJson(res, 503, { error: 'Base de données non configurée' });

@@ -266,7 +266,12 @@
     localStorage.setItem(CURRENT_USER_KEY, userId);
     hideUserModal();
     await bootApp();
-    showToast(`Profil « ${getCurrentUser()?.name || ''} » actif`);
+    if (isWebContext() && window.CloudSync?.isRequired?.() && !window.CloudSync.isEnabled()) {
+      navigateTo('sync');
+      showToast('Compte cloud obligatoire — créez-le sur le 1er appareil, puis liez les autres.');
+    } else {
+      showToast(`Profil « ${getCurrentUser()?.name || ''} » actif`);
+    }
   }
 
   async function switchToUser(userId) {
@@ -549,6 +554,12 @@
 
   function saveData() {
     if (!currentUserId) return;
+    if (window.CloudSync?.requireForSave && !window.CloudSync.requireForSave()) {
+      showToast('Enregistrement bloqué : liez ou créez un compte cloud (section Sync).');
+      navigateTo('sync');
+      window.CloudSync?.refreshUI?.();
+      return;
+    }
     try {
       const clean = stripExportMeta({ ...data });
       localStorage.setItem(storageKey(), JSON.stringify(clean));
@@ -1688,6 +1699,7 @@
   }
 
   function navigateTo(section) {
+    window.navigateTo = navigateTo;
     $$('.nav-item').forEach((n) => n.classList.toggle('active', n.dataset.section === section));
     $$('.bottom-nav-item[data-section]').forEach((n) => n.classList.toggle('active', n.dataset.section === section));
     $$('.section').forEach((s) => s.classList.toggle('active', s.id === `section-${section}`));
@@ -1955,7 +1967,7 @@
 
   async function bootApp() {
     if (window.CloudSync?.isEnabled()) {
-      await window.CloudSync.pull();
+      await window.CloudSync.syncFromServer({ silent: true });
     }
     data = loadData();
     await migrateLegacyScreenshots();
@@ -2036,6 +2048,10 @@
         return;
       }
       await bootApp();
+      if (isWebContext() && window.CloudSync?.isRequired?.() && !window.CloudSync.isEnabled()) {
+        navigateTo('sync');
+        showToast('Compte cloud obligatoire pour synchroniser PC et téléphone.');
+      }
     } finally {
       hideSplash();
     }

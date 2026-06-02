@@ -1,6 +1,6 @@
 # Trading Journal
 
-Journal de trading professionnel — **local d’abord** (localStorage + IndexedDB), avec **sync cloud optionnelle** via Vercel Postgres (gratuit).
+Journal de trading professionnel — **local d’abord** (localStorage + IndexedDB), avec **sync cloud obligatoire** sur le site déployé (Vercel Postgres / Neon).
 
 ## Fonctionnalités
 
@@ -9,7 +9,7 @@ Journal de trading professionnel — **local d’abord** (localStorage + Indexed
 - Statistiques hebdomadaires et courbe d'équité
 - Export CSV, JSON, Word
 - PWA installable (mobile & desktop)
-- Sync cloud optionnelle (profils, trades, captures) — Vercel Postgres / Neon gratuit
+- Sync cloud obligatoire en HTTPS (profils, trades, captures) — Vercel Postgres / Neon gratuit
 
 ---
 
@@ -75,9 +75,10 @@ Vercel ne fournit pas une base « intégrée » seule : il faut ajouter **Vercel
 
 ### Utiliser la sync dans l’app
 
-1. Ouvrir **Sync** → **Créer un compte cloud**
-2. Noter **identifiant** + **code secret** (affichés une fois)
-3. Sur un autre appareil : **Lier cet appareil** avec les mêmes identifiants
+1. Sur le **1er appareil** : **Sync** → **Créer un compte cloud** (une seule fois)
+2. Noter **identifiant** (`acc_…`) + **code secret** (ou « Copier identifiants »)
+3. Sur le **2e appareil** : **Lier cet appareil** (ne pas recréer un compte) — coller identifiant et secret
+4. Sans compte cloud, l’enregistrement des trades est bloqué sur le site Vercel
 4. Les modifications se synchronisent automatiquement (≈ 2 s après chaque sauvegarde)
 
 > Sans Postgres configuré, le journal fonctionne normalement en local. L’export JSON reste disponible.

@@ -559,11 +559,13 @@
           <p class="sync-note pwa-install-note" id="pwaInstallNote"></p>
         </div>
         <div class="card" id="cloudSyncPanel">
-          <h2>Sauvegarde cloud (Vercel Postgres)</h2>
-          <p class="sync-intro">Optionnel : stockez <strong>tous vos profils, trades et captures</strong> sur une base gratuite Vercel (Neon). Le journal fonctionne toujours hors ligne en local.</p>
+          <h2>Compte cloud (obligatoire)</h2>
+          <p class="sync-intro">Vos <strong>profils, trades et captures</strong> sont synchronisés entre PC et téléphone via le cloud. Sans compte, l’enregistrement est bloqué sur le site.</p>
+          <p class="sync-note"><strong>2e appareil :</strong> « Lier cet appareil » avec les identifiants du 1er — ne recréez pas un compte.</p>
           <p class="cloud-sync-status" id="cloudSyncStatus"></p>
 
           <div id="cloudCreateForm" class="cloud-sync-block">
+            <p class="sync-note"><strong>1er appareil</strong> — créez le compte une seule fois :</p>
             <div class="form-group">
               <label for="cloudCreateLabel">Nom du compte cloud</label>
               <input type="text" id="cloudCreateLabel" placeholder="Ex. Mon journal principal" maxlength="120">
@@ -579,7 +581,7 @@
             </div>
             <div class="form-group">
               <label for="cloudLinkSecret">Code secret</label>
-              <input type="password" id="cloudLinkSecret" placeholder="Code secret" autocomplete="off">
+              <input type="text" id="cloudLinkSecret" placeholder="Collez le code secret" autocomplete="off" spellcheck="false">
             </div>
             <button type="button" class="btn btn-ghost" id="cloudLinkBtn">Lier cet appareil</button>
           </div>
@@ -738,9 +740,9 @@
     </div>
   </div>
 
-  <script src="currency.js?v=5"></script>
-  <script src="cloud-sync.js?v=5"></script>
-  <script src="export-word.js?v=5"></script>
-  <script src="app.js?v=5"></script>
+  <script src="currency.js?v=6"></script>
+  <script src="cloud-sync.js?v=6"></script>
+  <script src="export-word.js?v=6"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
