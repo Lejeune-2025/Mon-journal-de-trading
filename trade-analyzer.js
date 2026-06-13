@@ -367,8 +367,8 @@
     const dropzone = $('#analyzerDropzone');
     const fileInput = $('#analyzerFileInput');
 
-    dropzone?.addEventListener('click', (e) => {
-      e.stopPropagation();
+    dropzone?.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
       e.preventDefault();
       fileInput?.click();
     });
