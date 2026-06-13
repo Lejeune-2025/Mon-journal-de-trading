@@ -367,7 +367,11 @@
     const dropzone = $('#analyzerDropzone');
     const fileInput = $('#analyzerFileInput');
 
-    dropzone?.addEventListener('click', () => fileInput?.click());
+    dropzone?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      fileInput?.click();
+    });
     fileInput?.addEventListener('change', (e) => {
       const file = e.target.files?.[0];
       if (file) loadImageFile(file);

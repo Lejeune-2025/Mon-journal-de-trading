@@ -2484,6 +2484,7 @@ body.modal-open { overflow: hidden; }
   text-align: center;
   padding: 2rem 1rem;
   color: var(--text-muted);
+  pointer-events: none;
 }
 .analyzer-preview-placeholder svg { margin: 0 auto 0.75rem; opacity: 0.6; }
 .analyzer-preview-placeholder p { font-size: 0.88rem; max-width: 220px; margin: 0 auto; }
