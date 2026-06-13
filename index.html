@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=24">
   <style>
     body:not(.app-ready) .app { opacity: 0; visibility: hidden; }
     .splash-screen {
@@ -69,6 +69,10 @@
         <button class="nav-item active" data-section="dashboard">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           <span data-i18n="nav.dashboard">Tableau de bord</span>
+        </button>
+        <button class="nav-item" data-section="analyzer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>
+          <span data-i18n="nav.analyzer">Analyseur</span>
         </button>
         <button class="nav-item" data-section="profile">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -205,6 +209,113 @@
           </div>
           <div class="trade-cards mobile-only" id="recentTradesCards"></div>
           <p class="empty-state hidden" id="emptyTrades" data-i18n="trades.empty">Aucun trade enregistré. Utilisez l’étape « Nouveau trade » dans le guide ci-dessus.</p>
+        </div>
+      </section>
+
+      <!-- ANALYSEUR DE TRADE -->
+      <section class="section" id="section-analyzer">
+        <div class="card">
+          <h2 class="analyzer-title" data-i18n="analyzer.title">Analyseur de trade</h2>
+          <p class="sync-intro" data-i18n="analyzer.intro">Envoyez une capture de votre graphique avant de trader. L'analyseur identifie la structure, les niveaux clés et propose des points d'entrée par timeframe.</p>
+          <div class="form-grid analyzer-form-grid">
+            <div class="form-group">
+              <label for="analyzerAsset" data-i18n="analyzer.asset">Actif (optionnel)</label>
+              <input type="text" id="analyzerAsset" placeholder="EUR/USD, BTC/USDT, NAS100…">
+            </div>
+            <div class="form-group">
+              <label for="analyzerMarket" data-i18n="analyzer.market">Marché</label>
+              <select id="analyzerMarket">
+                <option value="">Auto</option>
+                <option value="Forex">Forex</option>
+                <option value="Crypto">Crypto</option>
+                <option value="Indices">Indices</option>
+                <option value="Actions">Actions</option>
+                <option value="Matières premières">Matières premières</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label data-i18n="analyzer.timeframes">Timeframes à analyser</label>
+            <div class="checkbox-panel checkbox-panel--timeframes" id="analyzerTimeframes">
+              <fieldset class="checkbox-group">
+                <legend class="checkbox-group-label">Minutes</legend>
+                <div class="form-group">
+                  <select id="timeframeMinutes" multiple class="analyzer-select">
+                    <option value="M1">M1</option>
+                    <option value="M2">M2</option>
+                    <option value="M3">M3</option>
+                    <option value="M4">M4</option>
+                    <option value="M5">M5</option>
+                    <option value="M6">M6</option>
+                    <option value="M10">M10</option>
+                    <option value="M12">M12</option>
+                    <option value="M15">M15</option>
+                    <option value="M20">M20</option>
+                    <option value="M30">M30</option>
+                  </select>
+                </div>
+              </fieldset>
+              <fieldset class="checkbox-group">
+                <legend class="checkbox-group-label">Heures</legend>
+                <div class="form-group">
+                  <select id="timeframeHours" multiple class="analyzer-select">
+                    <option value="H1">H1</option>
+                    <option value="H2">H2</option>
+                    <option value="H3">H3</option>
+                    <option value="H4">H4</option>
+                    <option value="H6">H6</option>
+                    <option value="H8">H8</option>
+                    <option value="H12">H12</option>
+                  </select>
+                </div>
+              </fieldset>
+              <fieldset class="checkbox-group">
+                <legend class="checkbox-group-label">Supérieur à H12</legend>
+                <div class="form-group">
+                  <select id="timeframeLong" multiple class="analyzer-select">
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                  </select>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="analyzerNotes" data-i18n="analyzer.notes">Notes / contexte (optionnel)</label>
+            <textarea id="analyzerNotes" rows="2" placeholder="Ex. session Londres, news 14h30, je cherche un pullback…"></textarea>
+          </div>
+        </div>
+
+        <div class="card analyzer-upload-card">
+          <h2 data-i18n="analyzer.upload">Capture du graphique</h2>
+          <div class="analyzer-upload-row">
+            <div class="analyzer-dropzone" id="analyzerDropzone" tabindex="0" role="button" aria-label="Ajouter une capture">
+              <input type="file" id="analyzerFileInput" accept="image/*" class="hidden" aria-hidden="true">
+              <div class="analyzer-preview" id="analyzerPreview">
+                <img id="analyzerPreviewImg" class="hidden" alt="Aperçu du graphique">
+                <div class="analyzer-preview-placeholder" id="analyzerPreviewPlaceholder">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  <p data-i18n="analyzer.dropzone">Cliquez, glissez-déposez ou collez (Ctrl+V) une capture</p>
+                </div>
+              </div>
+            </div>
+            <div class="analyzer-upload-actions">
+              <button type="button" class="btn btn-primary" id="analyzerRunBtn" disabled data-i18n="analyzer.run">Analyser le graphique</button>
+              <button type="button" class="btn btn-ghost" id="analyzerClearBtn" data-i18n="analyzer.clear">Effacer</button>
+              <p class="analyzer-status" id="analyzerStatus"></p>
+            </div>
+          </div>
+        </div>
+
+        <div id="analyzerResults"></div>
+
+        <div class="card">
+          <div class="card-header card-header-inline">
+            <h2 data-i18n="analyzer.history.title">Historique des analyses</h2>
+            <button type="button" class="btn btn-ghost btn-sm" id="analyzerClearHistoryBtn" data-i18n="analyzer.history.clear">Effacer l'historique</button>
+          </div>
+          <div class="analyzer-history" id="analyzerHistory"></div>
         </div>
       </section>
 
@@ -866,9 +977,10 @@
   <script src="vercel-analytics.js?v=21"></script>
   <script src="legal-consent.js?v=21"></script>
   <script src="currency.js?v=21"></script>
-  <script src="cloud-sync.js?v=21"></script>
-  <script src="export-word.js?v=23"></script>
-  <script src="export-pdf.js?v=23"></script>
-  <script src="app.js?v=23"></script>
+  <script src="cloud-sync.js?v=24"></script>
+  <script src="trade-analyzer.js?v=24"></script>
+  <script src="export-word.js?v=24"></script>
+  <script src="export-pdf.js?v=24"></script>
+  <script src="app.js?v=24"></script>
 </body>
 </html>

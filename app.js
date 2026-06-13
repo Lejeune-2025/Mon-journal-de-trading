@@ -540,8 +540,58 @@
       weekly: t('nav.weekly'),
       checklist: t('nav.checklist'),
       notes: t('nav.notes'),
-      sync: t('nav.sync')
+      sync: t('nav.sync'),
+      analyzer: t('nav.analyzer')
     };
+  }
+
+  function parsePriceValue(raw) {
+    if (!raw || raw === '—' || /non lisible/i.test(raw)) return '';
+    const match = String(raw).replace(/\s/g, '').match(/[\d]+[.,]?[\d]*/);
+    if (!match) return '';
+    return match[0].replace(',', '.');
+  }
+
+  async function applyAnalysisToTrade(analysis, tfEntry) {
+    if (!tfEntry || tfEntry.direction === 'Attendre') {
+      showToast('Ce timeframe recommande d\'attendre — choisissez un autre plan.');
+      return;
+    }
+
+    resetTradeForm(false);
+    const summary = analysis?.summary || {};
+
+    $('#asset').value = summary.asset && summary.asset !== 'non précisé'
+      ? summary.asset
+      : ($('#analyzerAsset')?.value || data.profile.mainMarket || '');
+
+    const dir = tfEntry.direction === 'Vente' ? 'Vente' : 'Achat';
+    document.querySelector(`input[name="direction"][value="${dir}"]`)?.click();
+
+    $('#entryPrice').value = parsePriceValue(tfEntry.entryPrice) || parsePriceValue(tfEntry.entryZone);
+    $('#stopLoss').value = parsePriceValue(tfEntry.stopLoss);
+    $('#takeProfit').value = parsePriceValue(tfEntry.takeProfit1);
+
+    const tf = tfEntry.timeframe;
+    if (tf) setCheckedValues('timeframes', [tf]);
+
+    const reasonParts = [
+      `Setup (${tf}) : ${tfEntry.setup}`,
+      tfEntry.entryZone ? `Zone : ${tfEntry.entryZone}` : '',
+      tfEntry.invalidation ? `Invalidation : ${tfEntry.invalidation}` : '',
+      analysis.primaryScenario ? `Scénario : ${analysis.primaryScenario}` : ''
+    ].filter(Boolean);
+
+    $('#entryReason').value = reasonParts.join('\n');
+
+    const img = document.getElementById('analyzerPreviewImg');
+    if (img?.src && img.src.startsWith('data:')) {
+      screenshotBefore = img.src;
+      setScreenshotPreview('before', screenshotBefore);
+    }
+
+    navigateTo('new-trade');
+    showToast(window.I18n ? window.I18n.t('analyzer.toast.applied') : 'Formulaire pré-rempli depuis l\'analyse');
   }
 
   function loadData() {
@@ -1765,6 +1815,9 @@
       updateUserDisplay();
       loadProfile();
     }
+    if (section === 'analyzer') {
+      window.TradeAnalyzer?.refresh?.();
+    }
   }
 
   function renderAll() {
@@ -2062,6 +2115,17 @@
       initEquityChart();
       registerServiceWorker();
       initPwaInstall();
+
+      if (window.TradeAnalyzer) {
+        window.TradeAnalyzer.configure({
+          getProfile: () => data.profile,
+          getUserId: () => currentUserId,
+          showToast,
+          navigateTo,
+          onApplyToTrade: applyAnalysisToTrade
+        });
+        window.TradeAnalyzer.initUI();
+      }
 
       if (window.CloudSync) {
         window.CloudSync.configure({

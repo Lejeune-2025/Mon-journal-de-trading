@@ -84,8 +84,8 @@
     }
     const date = c.at ? new Date(c.at).toLocaleString('fr-FR') : '';
     const label = isAcceptedChoice(c.choice)
-      ? 'Cookies acceptés (analytics Vercel actifs)'
-      : 'Cookies refusés (pas d’analytics Vercel)';
+      ? 'Cookies acceptés'
+      : 'Cookies refusés';
     el.textContent = `${label}${date ? ` — ${date}` : ''}`;
     el.hidden = false;
   }
